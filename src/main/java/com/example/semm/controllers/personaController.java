@@ -10,6 +10,7 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
+import com.example.semm.models.Ciudad;
 import com.example.semm.models.CuentaCorriente;
 import com.example.semm.models.Estacionamiento;
 import com.example.semm.models.Patente;
@@ -22,6 +23,7 @@ import com.example.semm.security.model.Rol;
 import com.example.semm.security.model.Usuario;
 import com.example.semm.service.impl.EstacionamientoServiceImp;
 import com.example.semm.service.impl.personaServiceImp;
+import com.example.semm.services.CiudadService;
 import com.example.semm.services.CuentaCorrienteService;
 
 import org.slf4j.Logger;
@@ -54,6 +56,9 @@ public class personaController {
     
     @Autowired
     EstacionamientoServiceImp estService;
+    
+    @Autowired
+    CiudadService ciudadService;
     
     private final static Logger logger = LoggerFactory.getLogger(personaController.class);
     
@@ -99,8 +104,8 @@ public class personaController {
     	 System.out.println("EJECUTANDO DEBITO");
         Optional<Usuario> per = this.personaServiceImp.listaPorUsername(username);
         Optional<Estacionamiento> est = this.estService.listaPorId(per.get().getEstacionamiento().getId());
-        
-        System.out.println("nuevo saldo: "+ per.get().getCuentaCorriente().consumo(per,est));
+        ArrayList <Ciudad> ciudad = this.ciudadService.listar();
+        System.out.println("nuevo saldo: "+ per.get().getCuentaCorriente().consumo(per,est,ciudad.get(0)));
         this.personaServiceImp.actualizar(per.get());
         this.ccServiceImp.actualizar(per.get().getCuentaCorriente());
         return true;

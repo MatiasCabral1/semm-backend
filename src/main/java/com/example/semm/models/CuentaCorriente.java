@@ -46,19 +46,26 @@ public class CuentaCorriente {
 		
 	}
 
-	public double consumo(Optional<Usuario> per, Optional<Estacionamiento> est) {
+	public double consumo(Optional<Usuario> per, Optional<Estacionamiento> est, Ciudad ciudad) {
 		 Date today = new Date();
 		int hora = Integer.parseInt(est.get().getHoraInicio().split(":")[0]);
         int minuto = Integer.parseInt(est.get().getHoraInicio().split(":")[1]);
-        System.out.println("hora obtenida: "+ hora + ":" + minuto);
-        int horaFinalizado = today.getHours() - hora;
-        if(horaFinalizado > 0) {
-        	System.out.println("se debitara el monto correspondiente a "+ horaFinalizado);
-        	this.setSaldo(this.getSaldo()-(10*horaFinalizado));
+        int tiempoTranscurrido = today.getHours() - hora;
+        if(today.getMinutes() - minuto < 0){
+        	try {
+				this.setSaldo(this.getSaldo() - (ciudad.getValorHora() + (ciudad.getValorHora()* tiempoTranscurrido-1)));
+			} catch (Exception e) {
+				this.setSaldo(this.getSaldo()-(10 + (10*tiempoTranscurrido)));
+			}
         }else {
-        	System.out.println("se debitara el monto correspondiente a una hora");
-        	this.setSaldo(this.getSaldo()-10);
+        	try {
+				this.setSaldo(this.getSaldo() - (ciudad.getValorHora() + (ciudad.getValorHora()* tiempoTranscurrido)));
+			} catch (Exception e) {
+				this.setSaldo(this.getSaldo()-(10 + (10*tiempoTranscurrido)));
+			}
         }
+        	
+        	
 		
         return this.getSaldo();
 	}
