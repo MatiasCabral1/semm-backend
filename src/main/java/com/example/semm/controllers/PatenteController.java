@@ -1,8 +1,12 @@
 package com.example.semm.controllers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -23,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.semm.models.Patente;
 import com.example.semm.models.nuevaPatente;
+import com.example.semm.security.dto.Mensaje;
 import com.example.semm.security.model.Usuario;
 import com.example.semm.service.impl.PatenteServiceImpl;
 import com.example.semm.service.impl.personaServiceImp;
@@ -58,13 +63,16 @@ public class PatenteController {
 
     //@PreAuthorize("hasRoles('ADMIN')") -> con este codigo solo los usuarios tipo "admin" pueden ejecutar este metodo.
     @PostMapping("/guardar")
-    public ResponseEntity<Patente> guardaPatente(@Valid @RequestBody nuevaPatente nuevaPatente){
+    public ResponseEntity<?> guardaPatente(@Valid @RequestBody nuevaPatente nuevaPatente, BindingResult result){
     	//creo una patente
-    	System.out.println("ejecutando el metodo de registro de patente.");
+    	Map<String, Object> response = new HashMap<>();
+		if (result.hasErrors()) {
+			List<String> errors = result.getFieldErrors().stream().map(e -> e.getDefaultMessage())
+					.collect(Collectors.toList());
+			response.put("errors", errors);
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+		}
     	Optional<Usuario> per= personaService.listaPorUsername(nuevaPatente.getUser_name());
-    	System.out.println("datos que busco username: "+ nuevaPatente.getUser_name());
-    	System.out.println("datos que busco number: "+ nuevaPatente.getNumber());
-    	System.out.println("datos que busco"+ per.get().getId());
     	Patente p = new Patente(nuevaPatente.getNumber(),per.get());
     	per.get().getPatenteList().add(p);
     	personaService.actualizar(per.get());

@@ -1,11 +1,19 @@
 package com.example.semm.models;
 
-import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 
-public class nuevaPatente {
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+
+public class nuevaPatente implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@NotBlank
 	private String user_name;
 	@NotBlank
+	@Pattern(regexp = "([a-zA-Z]{3}\\d{3})|([a-zA-Z]{2}\\d{3}[a-zA-Z]{2})",message ="la patente debe tener el formato AAA999 o AA000AA")
 	private String numero;
 	
 	public nuevaPatente(String user_name, String number) {

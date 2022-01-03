@@ -4,9 +4,11 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 public class NuevoUsuario implements Serializable{
@@ -20,6 +22,7 @@ public class NuevoUsuario implements Serializable{
 	@NotNull(message = "Debe ingresar un telefono")
 	@NotBlank(message = "El telefono NO puede ser vacio")
 	@Size(min=10, max=10,message = "El telefono debe tener 10 digitos")
+	@Pattern(regexp = "(\\d{10})",message ="Solo se permiten numeros para el campo 'Telefono'")
     private String nombreUsuario;//nombre de usuario = telefono
     @NotNull(message = "Debe ingresar un correo")
 	@NotBlank(message = "el correo NO puede ser vacio")

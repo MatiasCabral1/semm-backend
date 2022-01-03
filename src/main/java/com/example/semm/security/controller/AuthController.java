@@ -63,21 +63,11 @@ public class AuthController {
 	    	// validaciones:
 			
 			if (bindingResult.hasErrors()) {
-				if((nuevoUsuario.getEmail()==null)||(nuevoUsuario.getNombreUsuario()==null)||(nuevoUsuario.getPassword()==null)) {
-					 return new ResponseEntity(new Mensaje("Los campos no pueden estar vacios"), HttpStatus.BAD_REQUEST);
-				 }
-				if((nuevoUsuario.getEmail().isBlank())||(nuevoUsuario.getNombreUsuario().isBlank())) {
-					 return new ResponseEntity(new Mensaje("Los campos no pueden tener espacios en blanco"), HttpStatus.BAD_REQUEST);
-				 }
-				 if(usuarioService.existsByNombreUsuario(nuevoUsuario.getNombreUsuario())) {
-			            return new ResponseEntity(new Mensaje("El usuario con ese telefono ya existe"), HttpStatus.BAD_REQUEST);
-				 }
-				 if((nuevoUsuario.getNombreUsuario().length()<10)|| (nuevoUsuario.getNombreUsuario().length()>10 )){
-					 return new ResponseEntity(new Mensaje("El telefono debe tener 10 digitos"), HttpStatus.BAD_REQUEST);
-				 }
-				
-			     return new ResponseEntity(new Mensaje("email invalido"), HttpStatus.BAD_REQUEST);  
+			     return new ResponseEntity(new Mensaje(bindingResult.getFieldError().getDefaultMessage()), HttpStatus.BAD_REQUEST);  
 		     }
+			if(usuarioService.existsByNombreUsuario(nuevoUsuario.getNombreUsuario())) {
+	            return new ResponseEntity(new Mensaje("El usuario con ese telefono ya existe"), HttpStatus.BAD_REQUEST);
+		 }
 			
 	        Usuario usuario =
 	                new Usuario(nuevoUsuario.getNombre(), nuevoUsuario.getNombreUsuario(), nuevoUsuario.getEmail(),
