@@ -1,4 +1,4 @@
-package com.example.semm.models;
+  package com.example.semm.models;
 
 import java.util.Date;
 
@@ -144,14 +144,11 @@ public class Estacionamiento {
 		this.usuario = usuario;
 	}
 
-	public Date getTiempoTranscurrido() {
-		Date time = new Date();
+	public Long getTiempoTranscurrido() {
+		Date inicio = new Date(this.getHoraInicio());
 		Date actual = new Date();
-		int hora = Integer.parseInt(this.getHoraInicio().split(":")[0]);
-        int minuto = Integer.parseInt(this.getHoraInicio().split(":")[1]);
-		time.setHours(actual.getHours() - hora );
-		time.setMinutes(actual.getMinutes() - minuto);
-	return time;
+		Long tiempoTranscurrido= actual.getTime() -inicio.getTime();
+	return tiempoTranscurrido;
 	}
 	
 }

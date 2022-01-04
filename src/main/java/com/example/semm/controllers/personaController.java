@@ -84,6 +84,13 @@ public class personaController {
         return new ResponseEntity<Optional<Usuario>>(per, HttpStatus.OK);
     }
     
+    @GetMapping( path = "/getDatos/{username}")
+    public ResponseEntity<Optional<Usuario>> getPorUsername(@PathVariable("username") String username) {
+    	//listo un usuario por id
+        Optional<Usuario> per = this.personaServiceImp.listaPorUsername(username);
+        return new ResponseEntity<Optional<Usuario>>(per, HttpStatus.OK);
+    }
+    
     @PostMapping("/patentes")
     public ResponseEntity<Set<Patente>> obtenerPatentesPorId(@RequestBody String username) {
     	//listo las patentes de un usuario por el user_id

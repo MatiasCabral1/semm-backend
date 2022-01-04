@@ -51,7 +51,6 @@ public class EstacionamientoController {
 			System.out.println("no hay un estacionamiento iniciado para el usuario: "+username);
     		return false;			
         }else {
-        	Date time = est.get().getTiempoTranscurrido();
     		System.out.println("se ejecuto el getEstado: " + estServiceImp.getPorEstado(username));
         	return true;
         }
@@ -59,19 +58,20 @@ public class EstacionamientoController {
     }
 	
 	@PostMapping("/getTime")
-    public Estacionamiento getTime(@RequestBody String username){
+    public Long getTime(@RequestBody String username){
     	//listado de estacionamientos
+		//retorna en milisegundos el tiempo transcurrido.
 		System.out.println("Metodo: /getTime");
 		Optional<Usuario> per = this.personaService.listaPorUsername(username);
 		Optional<Estacionamiento> est = estServiceImp.getPorEstado(username);
-		
 		if(per.isEmpty()) {
 			System.out.println("El nombre de usuario ingresado no existe.");	
+			return null;
 		}else {
-			Date time = est.get().getTiempoTranscurrido();
-			System.out.println("tiempo obtenido: " + est.get().getHoraInicio());
+			Long time = est.get().getTiempoTranscurrido();
+			return time;
 		}
-		return est.get();
+		
     }
 	
 
