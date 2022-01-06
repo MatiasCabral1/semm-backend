@@ -65,6 +65,14 @@ public class PatenteController {
     @PostMapping("/guardar")
     public ResponseEntity<?> guardaPatente(@Valid @RequestBody nuevaPatente nuevaPatente, BindingResult result){
     	//creo una patente
+    	Optional<Usuario> per= personaService.listaPorUsername(nuevaPatente.getUser_name());
+    	System.out.println("resultado de la consulta: "+patenteServiceImp.existsByPatenteAndUsuario(nuevaPatente.getNumber(),per.get().getId()));
+    	Patente consulta = patenteServiceImp.existsByPatenteAndUsuario(nuevaPatente.getNumber(),per.get().getId());
+    	if(consulta!=null) {
+    		System.out.println("return patente registrada");
+    		 return new ResponseEntity<Mensaje>(new Mensaje("la patente "+nuevaPatente.getNumber()+" ya existe en su listado de patente"), HttpStatus.BAD_REQUEST);
+    	}
+
     	Map<String, Object> response = new HashMap<>();
 		if (result.hasErrors()) {
 			List<String> errors = result.getFieldErrors().stream().map(e -> e.getDefaultMessage())
@@ -72,7 +80,7 @@ public class PatenteController {
 			response.put("errors", errors);
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
-    	Optional<Usuario> per= personaService.listaPorUsername(nuevaPatente.getUser_name());
+    	
     	Patente p = new Patente(nuevaPatente.getNumber(),per.get());
     	per.get().getPatenteList().add(p);
     	personaService.actualizar(per.get());

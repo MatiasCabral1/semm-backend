@@ -44,5 +44,9 @@ public class PatenteServiceImpl implements PatenteService{
 	public Optional<Patente> listaPorId(Long id) {
 		return patenteRepository.findById(id);
 	}
+	
+	public Patente existsByPatenteAndUsuario(String patente, Long idUser) {
+		return patenteRepository.existsByPatenteAndUsuario(patente, idUser);
+	}
 
 }
