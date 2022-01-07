@@ -88,6 +88,25 @@ public class PatenteController {
     	return new ResponseEntity<Patente>(p, HttpStatus.CREATED);
         
     }
+    
+    @PostMapping("/delete")
+    public ResponseEntity<?> eliminarPatente(@RequestBody nuevaPatente nuevaPatente){
+    	//creo una patente
+    	Optional<Usuario> per= personaService.listaPorUsername(nuevaPatente.getUser_name());
+    	Patente patenteConsulta = patenteServiceImp.existsByPatenteAndUsuario(nuevaPatente.getNumber(),per.get().getId());
+    	if(patenteConsulta!=null) {
+    		System.out.println("patente encontrada");
+    		System.out.println("resultado de el remove"+ per.get().getPatenteList().remove(patenteConsulta));
+    		//per.get().setPatenteList();
+        	personaService.actualizar(per.get());
+        	this.patenteServiceImp.eliminar(patenteConsulta.getId());
+        	return new ResponseEntity<Mensaje>(new Mensaje("la patente fue eliminada exitosamente"), HttpStatus.CREATED);
+    	}else {
+    		return new ResponseEntity<Mensaje>(new Mensaje("la patente "+nuevaPatente.getNumber()+" no se encuentra registrada"), HttpStatus.BAD_REQUEST);
+    	}
+    	
+        
+    }
     @GetMapping( path = "/{id}")
     public ResponseEntity<Optional<Patente>> obtenerPatentePorId(@PathVariable("id") Long id) {
     	//listo una patente por id

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.semm.models.CuentaCorriente;
 import com.example.semm.models.Patente;
 import com.example.semm.security.dto.JwtDto;
 import com.example.semm.security.dto.LoginUsuario;
@@ -35,6 +36,7 @@ import com.example.semm.security.model.Rol;
 import com.example.semm.security.model.Usuario;
 import com.example.semm.security.service.RolService;
 import com.example.semm.security.service.UsuarioService;
+import com.example.semm.services.CuentaCorrienteService;
 
 @RestController
 @RequestMapping("/auth")
@@ -48,6 +50,10 @@ public class AuthController {
 
 	    @Autowired
 	    UsuarioService usuarioService;
+	    
+	    @Autowired
+	    CuentaCorrienteService ccService;
+
 
 	    @Autowired
 	    RolService rolService;
@@ -77,8 +83,15 @@ public class AuthController {
 	        if(nuevoUsuario.getRoles().contains("admin"))
 	            roles.add(rolService.getByRolNombre(RolNombre.ROLE_ADMIN).get());
 	        usuario.setRoles(roles);
+	        
+	        CuentaCorriente cc = new CuentaCorriente();
+	        cc.setSaldo(0);
+	        cc.setUsuario(usuario);
+	        cc.setTelefono(usuario.getNombreUsuario());
+	        usuario.setCuentaCorriente(cc);
 	        usuarioService.save(usuario);
-	        return new ResponseEntity(new Mensaje("usuario guardado"), HttpStatus.CREATED);
+	        ccService.registrar(cc);
+	        return new ResponseEntity(usuario, HttpStatus.CREATED);
 	        }
 	    
 

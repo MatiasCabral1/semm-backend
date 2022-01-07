@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.example.semm.security.dto.TiempoPrecioDTO;
 import com.example.semm.security.model.Usuario;
 
 @Entity
@@ -144,11 +145,31 @@ public class Estacionamiento {
 		this.usuario = usuario;
 	}
 
-	public Long getTiempoTranscurrido() {
+	public TiempoPrecioDTO getDatosCobroActual(Ciudad ciudad) {
 		Date inicio = new Date(this.getHoraInicio());
 		Date actual = new Date();
+		System.out.println("hora inicio: "+ inicio.toString());
 		Long tiempoTranscurrido= actual.getTime() -inicio.getTime();
-	return tiempoTranscurrido;
+		double segundos = tiempoTranscurrido / 1000; 
+		double hora = Math.floor(segundos / 3600);
+		 double minutos = Math.floor((segundos % 3600)/60);
+        double resto=Math.floor(((segundos % 3600)/60)%15);
+		double FraccionesDeHora=Math.floor(((segundos % 3600)/60)/15);
+		
+		double precioFraccion=ciudad.getValorHora()/4;
+		System.out.println("minutos: "+ minutos);
+		System.out.println("horas: "+ hora);
+		if((resto==0)&&(minutos!=0)) {
+			//15 minutos exactos
+			System.out.print("entro al if: "+ minutos*precioFraccion);
+			return new TiempoPrecioDTO(hora,minutos,(FraccionesDeHora*precioFraccion));
+			
+		}
+		else {
+			//si pasaron unos minutos entonces se cobra los 15 completos.
+			System.out.print("entro al else: "+ ((minutos*precioFraccion)+precioFraccion));
+			return new TiempoPrecioDTO(hora,minutos,((FraccionesDeHora*precioFraccion)+precioFraccion));
+		}		
 	}
 	
 }

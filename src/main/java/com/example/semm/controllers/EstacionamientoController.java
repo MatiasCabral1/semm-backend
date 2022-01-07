@@ -17,10 +17,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.semm.models.Ciudad;
 import com.example.semm.models.Estacionamiento;
+import com.example.semm.security.dto.TiempoPrecioDTO;
 import com.example.semm.security.model.Usuario;
 import com.example.semm.service.impl.EstacionamientoServiceImp;
 import com.example.semm.service.impl.personaServiceImp;
+import com.example.semm.services.CiudadService;
 
 @RestController
 @RequestMapping("/estacionamiento")
@@ -31,6 +34,9 @@ public class EstacionamientoController {
 	
 	@Autowired
     personaServiceImp personaService;
+	
+	@Autowired
+    CiudadService ciudadService;
 	
 	@Autowired
     EstacionamientoServiceImp estService;
@@ -58,18 +64,19 @@ public class EstacionamientoController {
     }
 	
 	@PostMapping("/getTime")
-    public Long getTime(@RequestBody String username){
+    public TiempoPrecioDTO getTime(@RequestBody String username){
     	//listado de estacionamientos
 		//retorna en milisegundos el tiempo transcurrido.
 		System.out.println("Metodo: /getTime");
 		Optional<Usuario> per = this.personaService.listaPorUsername(username);
 		Optional<Estacionamiento> est = estServiceImp.getPorEstado(username);
+		ArrayList <Ciudad> ciudad = this.ciudadService.listar();
 		if(per.isEmpty()) {
 			System.out.println("El nombre de usuario ingresado no existe.");	
 			return null;
 		}else {
-			Long time = est.get().getTiempoTranscurrido();
-			return time;
+			TiempoPrecioDTO datos = est.get().getDatosCobroActual(ciudad.get(0));
+			return datos;
 		}
 		
     }

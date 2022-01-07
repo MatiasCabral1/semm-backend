@@ -3,10 +3,13 @@ package com.example.semm.controllers;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -15,9 +18,11 @@ import com.example.semm.models.CuentaCorriente;
 import com.example.semm.models.Estacionamiento;
 import com.example.semm.models.Patente;
 import com.example.semm.security.controller.AuthController;
+import com.example.semm.security.dto.CuentaCorrienteDTO;
 import com.example.semm.security.dto.LoginUsuario;
 import com.example.semm.security.dto.Mensaje;
 import com.example.semm.security.dto.NuevoUsuario;
+import com.example.semm.security.dto.datosCuentaDTO;
 import com.example.semm.security.enums.RolNombre;
 import com.example.semm.security.model.Rol;
 import com.example.semm.security.model.Usuario;
@@ -85,10 +90,17 @@ public class personaController {
     }
     
     @GetMapping( path = "/getDatos/{username}")
-    public ResponseEntity<Optional<Usuario>> getPorUsername(@PathVariable("username") String username) {
+    public ResponseEntity<datosCuentaDTO> getPorUsername(@PathVariable("username") String username) {
     	//listo un usuario por id
         Optional<Usuario> per = this.personaServiceImp.listaPorUsername(username);
-        return new ResponseEntity<Optional<Usuario>>(per, HttpStatus.OK);
+        if(per.isEmpty()) {
+        	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }else {
+        	datosCuentaDTO datosCuenta = new datosCuentaDTO(per.get().getNombre(),per.get().getNombreUsuario(),per.get().getEmail(),per.get().getCuentaCorriente());
+            System.out.println("datos de cc"+ per.get().getCuentaCorriente().getId());
+            return new ResponseEntity<datosCuentaDTO>(datosCuenta, HttpStatus.OK);
+        }
+        
     }
     
     @PostMapping("/patentes")
@@ -104,6 +116,27 @@ public class personaController {
     public ResponseEntity<CuentaCorriente> getSaldo(@RequestBody String username) {
         Optional<Usuario> per = this.personaServiceImp.listaPorUsername(username);
         return new ResponseEntity<CuentaCorriente>(per.get().getCuentaCorriente(), HttpStatus.OK);
+    }
+    
+    @PostMapping("/cargarSaldo")
+    public ResponseEntity<?> cargarSaldo(@Valid @RequestBody CuentaCorrienteDTO cc, BindingResult result) {
+    	
+    	Map<String, Object> response = new HashMap<>();
+		if (result.hasErrors()) {
+			List<String> errors = result.getFieldErrors().stream().map(e -> e.getDefaultMessage())
+					.collect(Collectors.toList());
+			response.put("errors", errors);
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+		}
+		
+		Optional<Usuario> per = this.personaServiceImp.listaPorUsername(cc.getTelefono());
+        Optional <CuentaCorriente> cuentaCorriente = this.ccServiceImp.listaPorId(cc.getId());
+        cuentaCorriente.get().cargar(cc.getSaldo());
+        System.out.println("nuevo saldo: "+ cuentaCorriente.get().getSaldo());
+        this.ccServiceImp.actualizar(cuentaCorriente.get());
+        per.get().getCuentaCorriente().setSaldo(cuentaCorriente.get().getSaldo());
+        this.personaServiceImp.actualizar(per.get());
+        return new ResponseEntity<Mensaje>(new Mensaje("Se ha actualizado el saldo"), HttpStatus.OK);
     }
     
     @PostMapping("/debitar")

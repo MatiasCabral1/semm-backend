@@ -39,8 +39,7 @@ public class Usuario {
 	@OneToMany(mappedBy="usuario")
 	Set<Patente> patenteList;
 	
-	@JsonIgnore
-	@OneToOne
+	@OneToOne(mappedBy = "usuario",  fetch = FetchType.EAGER,cascade = {CascadeType.ALL})
 	private CuentaCorriente cuentaCorriente;
 	
 	@JsonIgnore

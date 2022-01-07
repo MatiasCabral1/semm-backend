@@ -4,7 +4,9 @@ import java.util.Optional;
 
 import javax.persistence.*;
 
+import com.example.semm.security.dto.TiempoPrecioDTO;
 import com.example.semm.security.model.Usuario;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 @Entity
@@ -19,8 +21,32 @@ public class CuentaCorriente {
 	@Column 
 	private double saldo;
 	
-	@OneToOne(optional = true, mappedBy="cuentaCorriente")
+	public String getTelefono() {
+		return telefono;
+	}
+
+	public void setTelefono(String telefono) {
+		this.telefono = telefono;
+	}
+
+	@Column 
+	private String telefono;
+	
+	@JsonIgnore
+	@OneToOne(fetch = FetchType.EAGER,cascade = {CascadeType.ALL})
 	private Usuario usuario;
+	
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
+	
+	
+	
 
 
 	public Long getId() {
@@ -46,28 +72,14 @@ public class CuentaCorriente {
 		
 	}
 
-	public double consumo(Optional<Usuario> per, Optional<Estacionamiento> est, Ciudad ciudad) {
-		 Date today = new Date();
-		int hora = Integer.parseInt(est.get().getHoraInicio().split(":")[0]);
-        int minuto = Integer.parseInt(est.get().getHoraInicio().split(":")[1]);
-        int tiempoTranscurrido = today.getHours() - hora;
-        if(today.getMinutes() - minuto < 0){
-        	try {
-				this.setSaldo(this.getSaldo() - (ciudad.getValorHora() + (ciudad.getValorHora()* tiempoTranscurrido-1)));
-			} catch (Exception e) {
-				this.setSaldo(this.getSaldo()-(10 + (10*tiempoTranscurrido)));
-			}
-        }else {
-        	try {
-				this.setSaldo(this.getSaldo() - (ciudad.getValorHora() + (ciudad.getValorHora()* tiempoTranscurrido)));
-			} catch (Exception e) {
-				this.setSaldo(this.getSaldo()-(10 + (10*tiempoTranscurrido)));
-			}
-        }
-        	
-        	
-		
-        return this.getSaldo();
+	public TiempoPrecioDTO consumo(Optional<Usuario> per, Optional<Estacionamiento> est, Ciudad ciudad) {
+		TiempoPrecioDTO result = est.get().getDatosCobroActual(ciudad);
+		this.setSaldo(this.getSaldo() - result.getPrecio());	
+        return result;
+	}
+	
+	public void cargar(double monto) {
+		this.setSaldo(this.getSaldo() + monto);
 	}
 	
 }
