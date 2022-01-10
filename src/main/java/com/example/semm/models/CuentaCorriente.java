@@ -1,6 +1,7 @@
 package com.example.semm.models;
 import java.util.Date;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.persistence.*;
 
@@ -20,6 +21,7 @@ public class CuentaCorriente {
 	
 	@Column 
 	private double saldo;
+	
 	
 	public String getTelefono() {
 		return telefono;
@@ -43,11 +45,6 @@ public class CuentaCorriente {
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
-
-	
-	
-	
-
 
 	public Long getId() {
 		return id;

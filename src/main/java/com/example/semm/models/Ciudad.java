@@ -17,13 +17,16 @@ public class Ciudad {
 	@Column
 	private String horariosEstacionamiento;
 	
-	
+	public Ciudad () {}
 	//private lista diasOperables;
 	@Column
 	private double valorHora;
 	
-	@OneToOne(optional = true, mappedBy="ciudad")
-	private Estacionamiento estacionamiento;
+	public Ciudad(String horariosEstacionamiento, double valorHora) {
+		this.horariosEstacionamiento = horariosEstacionamiento;
+		this.valorHora = valorHora;
+	}
+
 	
 	public Long getId() {
 		return id;
