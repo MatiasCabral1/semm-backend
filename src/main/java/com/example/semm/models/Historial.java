@@ -28,6 +28,26 @@ public class Historial {
 	@Column 
 	private double saldoAnterior;
 	
+	@Column 
+	private double monto;
+	
+	public Historial(String horaInicio, String tipoOperacion, double saldoAnterior, double monto,
+			CuentaCorriente cuentaCorriente) {
+		this.horaInicio = horaInicio;
+		this.tipoOperacion = tipoOperacion;
+		this.saldoAnterior = saldoAnterior;
+		this.monto = monto;
+		this.cuentaCorriente = cuentaCorriente;
+	}
+
+	public double getMonto() {
+		return monto;
+	}
+
+	public void setMonto(double monto) {
+		this.monto = monto;
+	}
+
 	@OneToOne(fetch = FetchType.EAGER)
 	private CuentaCorriente cuentaCorriente;
 

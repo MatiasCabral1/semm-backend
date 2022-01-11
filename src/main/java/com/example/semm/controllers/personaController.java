@@ -140,7 +140,7 @@ public class personaController {
     }
     
     @PostMapping("/debitar")
-    public Boolean guardaPatente(@RequestBody String username){
+    public CuentaCorriente guardaPatente(@RequestBody String username){
     	 System.out.println("EJECUTANDO DEBITO");
         Optional<Usuario> per = this.personaServiceImp.listaPorUsername(username);
         Optional<Estacionamiento> est = this.estService.listaPorId(per.get().getEstacionamiento().getId());
@@ -148,7 +148,7 @@ public class personaController {
         System.out.println("nuevo saldo: "+ per.get().getCuentaCorriente().consumo(per,est,ciudad.get(0)));
         this.personaServiceImp.actualizar(per.get());
         this.ccServiceImp.actualizar(per.get().getCuentaCorriente());
-        return true;
+        return per.get().getCuentaCorriente();
     }
     
     @DeleteMapping (path = "/{id}")
