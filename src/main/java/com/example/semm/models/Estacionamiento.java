@@ -148,7 +148,6 @@ public class Estacionamiento {
 	public TiempoPrecioDTO getDatosCobroActual(Ciudad ciudad) {
 		Date inicio = new Date(this.getHoraInicio());
 		Date actual = new Date();
-		System.out.println("hora inicio: "+ inicio.toString());
 		Long tiempoTranscurrido= actual.getTime() -inicio.getTime();
 		double segundos = tiempoTranscurrido / 1000; 
 		double hora = Math.floor(segundos / 3600);
@@ -161,14 +160,12 @@ public class Estacionamiento {
 		System.out.println("horas: "+ hora);
 		if((resto==0)&&(minutos!=0)) {
 			//15 minutos exactos
-			System.out.print("entro al if: "+ minutos*precioFraccion);
-			return new TiempoPrecioDTO(hora,minutos,(FraccionesDeHora*precioFraccion));
+			return new TiempoPrecioDTO(hora,minutos,(FraccionesDeHora*precioFraccion)+(hora*ciudad.getValorHora()));
 			
 		}
 		else {
 			//si pasaron unos minutos entonces se cobra los 15 completos.
-			System.out.print("entro al else: "+ ((minutos*precioFraccion)+precioFraccion));
-			return new TiempoPrecioDTO(hora,minutos,((FraccionesDeHora*precioFraccion)+precioFraccion));
+			return new TiempoPrecioDTO(hora,minutos,((FraccionesDeHora*precioFraccion)+(hora*ciudad.getValorHora())+precioFraccion));
 		}		
 	}
 	
