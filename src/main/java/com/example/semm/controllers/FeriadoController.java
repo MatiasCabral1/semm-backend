@@ -37,31 +37,13 @@ public class FeriadoController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Feriado> guardaHistorial(@RequestBody Feriado f){
-		//creo una ciudad
-		Feriado feriado= this.FeriadoServiceImp.guardaHistorial(f);
+	public ResponseEntity<Feriado> saveFeriado(@RequestBody Feriado f){
+		//creo un feriado
+		Feriado feriado= this.FeriadoServiceImp.save(f);
 		return new ResponseEntity<Feriado>(feriado, HttpStatus.CREATED);
 	    
 	}
 	
-	@PostMapping("/saveList")
-	public ResponseEntity<Feriado> saveFromList(@RequestBody String f) throws JsonMappingException, JsonProcessingException{
-		//creo una ciudad
-		// con esta solucion se crea un string que seria una lista de fechas(feriados). 
-		// con el ".contains" se consulta si una fecha se encuentra dentro de esa lista de feriados.
-		ObjectMapper mapper = new ObjectMapper();
-		String jsonStr = mapper.writeValueAsString(f);
-		System.out.println("contenido recibido: "+jsonStr);
-		Feriado result = mapper.readValue(jsonStr, Feriado.class);
-		// convertir una lista JSON a Java
-		//Feriado result = mapper.readValue(f.split("["), Feriado.class);
-		String fecha = "1 de Enero Sábado";
-		System.out.println("contenido result: "+result.getFecha());
-		System.out.println("contenido result boolean: "+result.getFecha().contains(fecha));
-		//Feriado feriado= this.FeriadoServiceImp.guardaHistorial(f);
-		return new ResponseEntity<Feriado>( HttpStatus.CREATED);
-	    
-	}
 	
 	@GetMapping( path = "/{fecha}")
     public boolean obtenerFeriadoPorFecha(@PathVariable("fecha") String fecha) {

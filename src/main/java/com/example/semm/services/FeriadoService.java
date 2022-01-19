@@ -7,5 +7,5 @@ import com.example.semm.models.Feriado;
 
 public interface FeriadoService {
 	ArrayList<Feriado> listar();
-	Feriado guardaHistorial(Feriado feriado);
+	Feriado save(Feriado feriado);
 }

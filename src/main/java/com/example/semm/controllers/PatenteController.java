@@ -132,9 +132,9 @@ public class PatenteController {
     @PutMapping // actualizar patente
     public ResponseEntity<Patente> updatePatente(@RequestBody Patente patente) {
     System.out.println("Actualizando la patente " + patente.getId());
-    Optional<Patente> currentUser = patenteServiceImp.listaPorId(patente.getId());
+    Optional<Patente> currentPatente = patenteServiceImp.listaPorId(patente.getId());
     
-    if (currentUser.isEmpty()) {
+    if (currentPatente.isEmpty()) {
 	    System.out.println("patente with id " + patente.getId() + " not found");	    
 	    return new ResponseEntity<Patente>(HttpStatus.NOT_FOUND);
     }else {

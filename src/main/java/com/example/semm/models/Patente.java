@@ -29,7 +29,6 @@ public class Patente {
 	@Column
 	private String numero;
 	
-	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "id_usuario")
 	Usuario usuario;

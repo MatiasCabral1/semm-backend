@@ -19,11 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.semm.models.Ciudad;
 import com.example.semm.models.Estacionamiento;
+import com.example.semm.models.Feriado;
+import com.example.semm.security.dto.Mensaje;
 import com.example.semm.security.dto.TiempoPrecioDTO;
 import com.example.semm.security.model.Usuario;
 import com.example.semm.service.impl.EstacionamientoServiceImp;
 import com.example.semm.service.impl.personaServiceImp;
 import com.example.semm.services.CiudadService;
+import com.example.semm.services.FeriadoService;
 
 @RestController
 @RequestMapping("/estacionamiento")
@@ -40,6 +43,9 @@ public class EstacionamientoController {
 	
 	@Autowired
     EstacionamientoServiceImp estService;
+	
+	@Autowired
+	FeriadoService feriadoService;
 	
 	@GetMapping
     public ArrayList<Estacionamiento> obtenerCiudad(){
@@ -83,7 +89,7 @@ public class EstacionamientoController {
 	
 
     @PostMapping("/nuevo")
-    public ResponseEntity<Estacionamiento> guardaEstacionamiento(@RequestBody Estacionamiento e){
+    public ResponseEntity<?> guardaEstacionamiento(@RequestBody Estacionamiento e){
     	//creo un estacionamiento
     	//verifica que el la patente del estacionamiento recibido no se haya iniciado anteriormente con otro o el mismo usuario. 
     	//en caso de que ya haya sido iniciada se devuelve "no content"
@@ -101,15 +107,24 @@ public class EstacionamientoController {
     		}
     	}
     	if(!existe) {
-    		System.out.println("guardando estacionamiento con horario: "+ e.getHoraInicio()+ e.getIniciado());
-    		Estacionamiento est= this.estServiceImp.guardarEstacionamiento(e);
-        	per.get().setEstacionamiento(e);
-        	this.personaService.actualizar(per.get());
-        	return new ResponseEntity<Estacionamiento>(est, HttpStatus.CREATED);
-    	}else {
-    		return new ResponseEntity<Estacionamiento>(HttpStatus.NO_CONTENT);
-    	}
-    }
+    	    	Optional<Ciudad>ciudad=ciudadService.listaPorId(Long.parseLong("1"));
+    	    	Optional<Usuario>usuario=personaService.listaPorUsername(e.getUsername());
+    	    	Iterable<Feriado>feriados=feriadoService.listar();
+    	    	Mensaje msj= Estacionamiento.validaciones(ciudad.get(), feriados);
+    	    	double saldoCuenta=usuario.get().getCuentaCorriente().getSaldo();
+    	       if(saldoCuenta>= ciudad.get().getValorHora() ) {
+    	    	   if(msj==null) {
+    	    		   Estacionamiento est= this.estServiceImp.guardarEstacionamiento(e);
+    	    		   per.get().setEstacionamiento(e);
+	    	           this.personaService.actualizar(per.get());
+	    	           return new ResponseEntity<Estacionamiento>(est, HttpStatus.CREATED);
+    	    	     }
+    	    	   else return new ResponseEntity<Mensaje>(msj, HttpStatus.BAD_REQUEST);
+    	       }
+    	     else return new ResponseEntity<Mensaje>(new Mensaje("El saldo de la cuenta es insuficiente"), HttpStatus.BAD_REQUEST);
+    	    }
+    	else return new ResponseEntity<Mensaje>(new Mensaje("La patente ya tiene un estacionamiento iniciado"), HttpStatus.BAD_REQUEST);
+    		}
 
     @GetMapping( path = "/{id}")
     public ResponseEntity<Optional<Estacionamiento>> obtenerEstacionamientoPorId(@PathVariable("id") Long id) {

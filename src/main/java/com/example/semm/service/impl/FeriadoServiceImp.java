@@ -21,7 +21,7 @@ public class FeriadoServiceImp implements FeriadoService{
 	}
 
 	@Override
-	public Feriado guardaHistorial(Feriado feriado) {
+	public Feriado save(Feriado feriado) {
 		return feriadoRepository.save(feriado);
 	}
 	

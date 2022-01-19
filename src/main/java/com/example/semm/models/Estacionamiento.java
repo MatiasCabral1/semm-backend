@@ -1,5 +1,6 @@
   package com.example.semm.models;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -10,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.example.semm.security.dto.Mensaje;
 import com.example.semm.security.dto.TiempoPrecioDTO;
 import com.example.semm.security.model.Usuario;
 
@@ -167,6 +169,47 @@ public class Estacionamiento {
 			//si pasaron unos minutos entonces se cobra los 15 completos.
 			return new TiempoPrecioDTO(hora,minutos,((FraccionesDeHora*precioFraccion)+(hora*ciudad.getValorHora())+precioFraccion));
 		}		
+	}
+	
+	public static Mensaje validaciones(Ciudad ciudad, Iterable<Feriado> feriados){
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM");
+		String fecha = sdf.format(new Date()); 
+		Date fechaCompleta= new Date();
+		@SuppressWarnings("deprecation")
+		int horaInicio=fechaCompleta.getHours();
+		String horaInicioCiudad=ciudad.getHorariosEstacionamiento().split("-")[0];
+		String horaFinCiudad=ciudad.getHorariosEstacionamiento().split("-")[1];
+
+		if((horaInicio>=Integer.valueOf (horaInicioCiudad))&&(horaInicio<Integer.valueOf (horaFinCiudad))){
+		     if(!esFechaNoLaborable(fecha,feriados)) {
+		    	 if(!esFinDeSemana(fechaCompleta.toString())) {
+		    	 return null;
+		    	 }
+		    	 else return (new Mensaje("No puede operar los fines de semana"));
+		     }
+		     else {
+		    	 return (new Mensaje("No puede estacionar fuera de las fechas habiles"));
+		     }
+		}
+		else {
+			return (new Mensaje("El horario operable es de: "+horaInicioCiudad +"a"+horaFinCiudad+"hs "));
+		}
+
+	}
+
+	public static boolean esFinDeSemana(String fecha) {
+		String dia=fecha.split(" ")[0];
+		return (dia.equals("Mon") || (dia.equals("Sat")));
+
+	}
+	public static boolean esFechaNoLaborable(String fecha,Iterable<Feriado> feriados){
+	    for( Feriado f: feriados) {
+	    	if(f.getFecha().equals(fecha)) {
+	    		return true;
+	    	}
+	    }
+		return false;
+
 	}
 	
 }
