@@ -129,27 +129,10 @@ public class personaController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 		
-		Optional<Usuario> per = this.personaServiceImp.listaPorUsername(cc.getTelefono());
-        Optional <CuentaCorriente> cuentaCorriente = this.ccServiceImp.listaPorId(cc.getId());
-        cuentaCorriente.get().cargar(cc.getSaldo());
-        System.out.println("nuevo saldo: "+ cuentaCorriente.get().getSaldo());
-        this.ccServiceImp.actualizar(cuentaCorriente.get());
-        per.get().getCuentaCorriente().setSaldo(cuentaCorriente.get().getSaldo());
-        this.personaServiceImp.actualizar(per.get());
+		this.personaServiceImp.cargarSaldo(cc);
         return new ResponseEntity<Mensaje>(new Mensaje("Se ha actualizado el saldo"), HttpStatus.OK);
     }
     
-    @PostMapping("/debitar")
-    public CuentaCorriente guardaPatente(@RequestBody String username){
-    	 System.out.println("EJECUTANDO DEBITO");
-        Optional<Usuario> per = this.personaServiceImp.listaPorUsername(username);
-        Optional<Estacionamiento> est = this.estService.listaPorId(per.get().getEstacionamiento().getId());
-        ArrayList <Ciudad> ciudad = this.ciudadService.listar();
-        System.out.println("nuevo saldo: "+ per.get().getCuentaCorriente().consumo(per,est,ciudad.get(0)));
-        this.personaServiceImp.actualizar(per.get());
-        this.ccServiceImp.actualizar(per.get().getCuentaCorriente());
-        return per.get().getCuentaCorriente();
-    }
     
     @DeleteMapping (path = "/{id}")
     public ResponseEntity<Usuario> eliminarPorId(@PathVariable("id") Long id){

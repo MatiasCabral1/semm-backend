@@ -20,7 +20,7 @@ public class Historial {
 	private Long id;
 	
 	@Column
-	private String horaInicio;
+	private String fechaOperacion;
 	
 	@Column 
 	private String tipoOperacion;
@@ -33,7 +33,7 @@ public class Historial {
 	
 	public Historial(String horaInicio, String tipoOperacion, double saldoAnterior, double monto,
 			CuentaCorriente cuentaCorriente) {
-		this.horaInicio = horaInicio;
+		this.fechaOperacion = horaInicio;
 		this.tipoOperacion = tipoOperacion;
 		this.saldoAnterior = saldoAnterior;
 		this.monto = monto;
@@ -52,7 +52,7 @@ public class Historial {
 	private CuentaCorriente cuentaCorriente;
 
 	public Historial(String horaInicio, String tipoOperacion, double saldoAnterior) {
-		this.horaInicio = horaInicio;
+		this.fechaOperacion = horaInicio;
 		this.tipoOperacion = tipoOperacion;
 		this.saldoAnterior = saldoAnterior;
 	}
@@ -77,7 +77,7 @@ public class Historial {
 	
 	public Historial(Long id, String horaInicio, String tipoOperacion) {
 		this.id = id;
-		this.horaInicio = horaInicio;
+		this.fechaOperacion = horaInicio;
 		this.tipoOperacion = tipoOperacion;
 	}
 	
@@ -93,13 +93,13 @@ public class Historial {
 	}
 
 	public String getHoraInicio() {
-		return horaInicio;
+		return fechaOperacion;
 	}
 
 	
 
 	public void setHoraInicio(String horaInicio) {
-		this.horaInicio = horaInicio;
+		this.fechaOperacion = horaInicio;
 	}
 
 	public String getTipoOperacion() {

@@ -114,10 +114,10 @@ public class EstacionamientoController {
     	    	double saldoCuenta=usuario.get().getCuentaCorriente().getSaldo();
     	       if(saldoCuenta>= ciudad.get().getValorHora() ) {
     	    	   if(msj==null) {
-    	    		   Estacionamiento est= this.estServiceImp.guardarEstacionamiento(e);
+    	    		   this.estServiceImp.guardarEstacionamiento(e);
     	    		   per.get().setEstacionamiento(e);
 	    	           this.personaService.actualizar(per.get());
-	    	           return new ResponseEntity<Estacionamiento>(est, HttpStatus.CREATED);
+	    	           return new ResponseEntity<Mensaje>(new Mensaje("Estacionamiento iniciado exitosamente"), HttpStatus.CREATED);
     	    	     }
     	    	   else return new ResponseEntity<Mensaje>(msj, HttpStatus.BAD_REQUEST);
     	       }
@@ -135,18 +135,23 @@ public class EstacionamientoController {
     }
     
     @PostMapping( path = "/finalizarEstacionamiento")
-    public ResponseEntity<Estacionamiento> finalizarEstacionamiento( @RequestBody String username) {
+    public ResponseEntity<?> finalizarEstacionamiento( @RequestBody String username) {
     	//listo una estacionamiento por id
     	System.out.println("Metodo: /finalizarEstacionamiento");
     	Optional<Estacionamiento> currentEst = estServiceImp.getPorEstado(username);
     	if (currentEst.isEmpty()) {    
-    		System.out.println("No hay ningun estacionamiento iniciado");
     	    return new ResponseEntity<Estacionamiento>(HttpStatus.NOT_FOUND);
         }else {
-        	currentEst.get().setIniciado(false);
-        	this.estServiceImp.actualizar(currentEst.get());
-        	System.out.println("Estado actualizado");
-        	return new ResponseEntity<Estacionamiento>(currentEst.get(), HttpStatus.OK);
+        	Optional<Ciudad>ciudad=ciudadService.listaPorId(Long.parseLong("1"));
+	    	Iterable<Feriado>feriados=feriadoService.listar();
+	    	Mensaje msj= Estacionamiento.validaciones(ciudad.get(), feriados);
+	    	if(msj==null) {
+	    		currentEst.get().setIniciado(false);
+	    		this.personaService.debitarConsumo(username);
+	        	this.estServiceImp.actualizar(currentEst.get());
+	        	return new ResponseEntity<Estacionamiento>(currentEst.get(), HttpStatus.OK);
+	    	}
+	    	   else return new ResponseEntity<Mensaje>(msj, HttpStatus.BAD_REQUEST);
         }
 
     }

@@ -10,7 +10,8 @@ import com.example.semm.models.Historial;
 
 
 public interface HistorialRepository extends CrudRepository<Historial, Long>{
-	@Query(value="SELECT * FROM Historial h WHERE h.cuenta_corriente_id =?1", 
+	@Query(value="SELECT * FROM Historial h WHERE h.cuenta_corriente_id =?1 ORDER BY h.fecha_operacion desc", 
 			nativeQuery = true)
 	List<Historial> existsByCuentaCorriente(Long id);
+
 }

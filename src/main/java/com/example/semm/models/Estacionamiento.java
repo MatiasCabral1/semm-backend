@@ -25,9 +25,6 @@ public class Estacionamiento {
 	
 	@Column
 	private String horaInicio;
-
-	@Column
-	private Double precioFinal;
 	
 	@Column
 	private String patente;
@@ -45,14 +42,12 @@ public class Estacionamiento {
 		this.username = username;
 	}
 
-	public Estacionamiento(Long id, String horaInicio, Double precioFinal, String patente, Boolean iniciado,
+	public Estacionamiento(Long id, String horaInicio, String patente, Boolean iniciado,
 			Ciudad ciudad, Usuario usuario) {
 		this.id = id;
 		this.horaInicio = horaInicio;
-		this.precioFinal = precioFinal;
 		this.patente = patente;
 		this.iniciado = iniciado;
-		this.ciudad = ciudad;
 		this.usuario = usuario;
 	}
 
@@ -66,31 +61,21 @@ public class Estacionamiento {
 
 	@Override
 	public String toString() {
-		return "Estacionamiento [id=" + id + ", horaInicio=" + horaInicio + ", precioFinal=" + precioFinal
-				+ ", patente=" + patente + ", iniciado=" + iniciado + ", ciudad=" + ciudad + ", usuario=" + usuario
+		return "Estacionamiento [id=" + id + ", horaInicio=" + horaInicio
+				+ ", patente=" + patente + ", iniciado=" + iniciado + ", usuario=" + usuario
 				+ "]";
 	}
 
-	@OneToOne
-	private Ciudad ciudad;
 	
-	public Estacionamiento(Long id, String horaInicio, Double precioFinal, String patente, Ciudad ciudad,
+	public Estacionamiento(Long id, String horaInicio, String patente,
 			Usuario usuario) {
 		this.id = id;
 		this.horaInicio = horaInicio;
-		this.precioFinal = precioFinal;
 		this.patente = patente;
-		this.ciudad = ciudad;
 		this.usuario = usuario;
 	}
 
-	public Ciudad getCiudad() {
-		return ciudad;
-	}
 
-	public void setCiudad(Ciudad ciudad) {
-		this.ciudad = ciudad;
-	}
 
 	@OneToOne(optional = true, mappedBy="estacionamiento")
 	private Usuario usuario;
@@ -99,13 +84,6 @@ public class Estacionamiento {
 	public Estacionamiento() {
 	}
 
-	public Estacionamiento(Long id, String horaInicio, Double precioFinal, String patente, Usuario usuario) {
-		this.id = id;
-		this.horaInicio = horaInicio;
-		this.precioFinal = precioFinal;
-		this.patente = patente;
-		this.usuario = usuario;
-	}
 
 	public Long getId() {
 		return id;
@@ -123,13 +101,6 @@ public class Estacionamiento {
 		this.horaInicio = horaInicio;
 	}
 
-	public Double getPrecioFinal() {
-		return precioFinal;
-	}
-
-	public void setPrecioFinal(Double precioFinal) {
-		this.precioFinal = precioFinal;
-	}
 
 	public String getPatente() {
 		return patente;
@@ -188,7 +159,7 @@ public class Estacionamiento {
 		    	 else return (new Mensaje("No puede operar los fines de semana"));
 		     }
 		     else {
-		    	 return (new Mensaje("No puede estacionar fuera de las fechas habiles"));
+		    	 return (new Mensaje("No se puede operar los dias feriados"));
 		     }
 		}
 		else {
@@ -199,7 +170,7 @@ public class Estacionamiento {
 
 	public static boolean esFinDeSemana(String fecha) {
 		String dia=fecha.split(" ")[0];
-		return (dia.equals("Mon") || (dia.equals("Sat")));
+		return (dia.equals("Sun") || (dia.equals("Sat")));
 
 	}
 	public static boolean esFechaNoLaborable(String fecha,Iterable<Feriado> feriados){
