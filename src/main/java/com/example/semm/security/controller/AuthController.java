@@ -23,20 +23,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.semm.models.CuentaCorriente;
-import com.example.semm.models.Patente;
-import com.example.semm.security.dto.JwtDto;
-import com.example.semm.security.dto.LoginUsuario;
-import com.example.semm.security.dto.Mensaje;
-import com.example.semm.security.dto.NuevoUsuario;
-import com.example.semm.security.enums.RolNombre;
+import com.example.semm.models.CurrentAccount;
+import com.example.semm.models.Patent;
+import com.example.semm.security.dto.JwtDTO;
+import com.example.semm.security.dto.LoginUserDTO;
+import com.example.semm.security.dto.Message;
+import com.example.semm.security.dto.NewUserDTO;
+import com.example.semm.security.enums.RolName;
 import com.example.semm.security.jwt.JwtEntryPoint;
 import com.example.semm.security.jwt.JwtProvider;
 import com.example.semm.security.model.Rol;
-import com.example.semm.security.model.Usuario;
+import com.example.semm.security.model.User;
 import com.example.semm.security.service.RolService;
-import com.example.semm.security.service.UsuarioService;
-import com.example.semm.services.CuentaCorrienteService;
+import com.example.semm.security.service.UserService;
+import com.example.semm.services.CurrentAccountService;
 
 @RestController
 @RequestMapping("/auth")
@@ -49,10 +49,10 @@ public class AuthController {
 	    AuthenticationManager authenticationManager;
 
 	    @Autowired
-	    UsuarioService usuarioService;
+	    UserService userService;
 	    
 	    @Autowired
-	    CuentaCorrienteService ccService;
+	    CurrentAccountService currentAccountService;
 
 
 	    @Autowired
@@ -64,47 +64,47 @@ public class AuthController {
 	    private final static Logger logger = LoggerFactory.getLogger(AuthController.class);
 
 	    @PostMapping("/nuevo")
-	    public ResponseEntity<?> nuevo(@Valid @RequestBody NuevoUsuario nuevoUsuario, BindingResult bindingResult){
+	    public ResponseEntity<?> nuevo(@Valid @RequestBody NewUserDTO newUser, BindingResult bindingResult){
 	    	
 	    	// validaciones:
 			
 			if (bindingResult.hasErrors()) {
-			     return new ResponseEntity(new Mensaje(bindingResult.getFieldError().getDefaultMessage()), HttpStatus.BAD_REQUEST);  
+			     return new ResponseEntity<Message>(new Message(bindingResult.getFieldError().getDefaultMessage()), HttpStatus.BAD_REQUEST);  
 		     }
-			if(usuarioService.existsByNombreUsuario(nuevoUsuario.getNombreUsuario())) {
-	            return new ResponseEntity(new Mensaje("El usuario con ese telefono ya existe"), HttpStatus.BAD_REQUEST);
+			if(userService.existsByUsername(newUser.getUsername())) {
+	            return new ResponseEntity<Message>(new Message("El usuario con ese telefono ya existe"), HttpStatus.BAD_REQUEST);
 		 }
 			
-	        Usuario usuario =
-	                new Usuario(nuevoUsuario.getNombre(), nuevoUsuario.getNombreUsuario(), nuevoUsuario.getEmail(),
-	                        passwordEncoder.encode(nuevoUsuario.getPassword()));
+	        User user =
+	                new User(newUser.getName(), newUser.getUsername(), newUser.getEmail(),
+	                        passwordEncoder.encode(newUser.getPassword()));
 	        Set<Rol> roles = new HashSet<>();
-	        roles.add(rolService.getByRolNombre(RolNombre.ROLE_USER).get());
-	        if(nuevoUsuario.getRoles().contains("admin"))
-	            roles.add(rolService.getByRolNombre(RolNombre.ROLE_ADMIN).get());
-	        usuario.setRoles(roles);
+	        roles.add(rolService.getByRolName(RolName.ROLE_USER).get());
+	        if(newUser.getRoles().contains("admin"))
+	            roles.add(rolService.getByRolName(RolName.ROLE_ADMIN).get());
+	        user.setRoles(roles);
 	        
-	        CuentaCorriente cc = new CuentaCorriente();
-	        cc.setSaldo(0);
-	        cc.setUsuario(usuario);
-	        cc.setTelefono(usuario.getNombreUsuario());
-	        usuario.setCuentaCorriente(cc);
-	        usuarioService.save(usuario);
-	        ccService.registrar(cc);
-	        return new ResponseEntity(usuario, HttpStatus.CREATED);
+	        CurrentAccount ca = new CurrentAccount();
+	        ca.setBalance(0);
+	        ca.setUser(user);
+	        ca.setPhone(user.getUsername());
+	        user.setCurrentAccount(ca);
+	        userService.save(user);
+	        currentAccountService.save(ca);
+	        return new ResponseEntity<User>(user, HttpStatus.CREATED);
 	        }
 	    
 
 	    @PostMapping("/login")
-	    public ResponseEntity<JwtDto> login(@Valid @RequestBody LoginUsuario loginUsuario, BindingResult bindingResult){
+	    public ResponseEntity<JwtDTO> login(@Valid @RequestBody LoginUserDTO loginUser, BindingResult bindingResult){
 	        if(bindingResult.hasErrors())
-	            return new ResponseEntity(new Mensaje("Los datos ingresados son incorrectos"), HttpStatus.BAD_REQUEST);
+	            return new ResponseEntity(new Message("Los datos ingresados son incorrectos"), HttpStatus.BAD_REQUEST);
 	        Authentication authentication =
-	                authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUsuario.getNombreUsuario(), loginUsuario.getPassword()));
+	                authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUser.getUsername(), loginUser.getPassword()));
 	        SecurityContextHolder.getContext().setAuthentication(authentication);
 	        String jwt = jwtProvider.generateToken(authentication);
 	        UserDetails userDetails = (UserDetails)authentication.getPrincipal();
-	        JwtDto jwtDto = new JwtDto(jwt, userDetails.getUsername(), userDetails.getAuthorities());
-	        return new ResponseEntity(jwtDto, HttpStatus.OK);
+	        JwtDTO jwtDto = new JwtDTO(jwt, userDetails.getUsername(), userDetails.getAuthorities());
+	        return new ResponseEntity<JwtDTO>(jwtDto, HttpStatus.OK);
 	    }
 }

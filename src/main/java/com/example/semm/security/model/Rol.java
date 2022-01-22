@@ -2,7 +2,7 @@ package com.example.semm.security.model;
 
 import javax.persistence.*;
 
-import com.example.semm.security.enums.RolNombre;
+import com.example.semm.security.enums.RolName;
 import com.sun.istack.NotNull;
 
 @Entity
@@ -12,11 +12,11 @@ public class Rol {
 	private int id;
 	@NotNull
 	@Enumerated(EnumType.STRING)
-	private RolNombre rolNombre;
+	private RolName rolNombre;
 	public Rol() {
 		super();
 	}
-	public Rol(RolNombre rolNombre) {
+	public Rol(RolName rolNombre) {
 		super();
 		this.rolNombre = rolNombre;
 	}
@@ -26,10 +26,10 @@ public class Rol {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public RolNombre getRolNombre() {
+	public RolName getRolNombre() {
 		return rolNombre;
 	}
-	public void setRolNombre(@NotNull RolNombre rolNombre) {
+	public void setRolNombre(@NotNull RolName rolNombre) {
 		this.rolNombre = rolNombre;
 	}
 	
