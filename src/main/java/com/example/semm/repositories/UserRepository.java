@@ -1,11 +1,11 @@
-package com.example.semm.security.repositories;
+package com.example.semm.repositories;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.example.semm.security.model.User;
+import com.example.semm.models.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User,Long>{

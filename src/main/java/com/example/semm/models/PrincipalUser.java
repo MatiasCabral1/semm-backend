@@ -1,4 +1,4 @@
-package com.example.semm.security.model;
+package com.example.semm.models;
 
 import java.util.Collection;
 import java.util.List;

@@ -13,7 +13,6 @@ import javax.persistence.Table;
 
 import com.example.semm.security.dto.Message;
 import com.example.semm.security.dto.TimePriceDTO;
-import com.example.semm.security.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -118,6 +117,7 @@ public class Parking {
 	}
 
 	public TimePriceDTO getCurrentPaymentDetails(City city) {
+		@SuppressWarnings("deprecation")
 		Date start = new Date(this.getDate());
 		Date current = new Date();
 		Long timeElapsed= current.getTime() -start.getTime();

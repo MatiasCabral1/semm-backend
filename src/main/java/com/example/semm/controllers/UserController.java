@@ -13,10 +13,10 @@ import javax.validation.Valid;
 
 import com.example.semm.models.CurrentAccount;
 import com.example.semm.models.Patent;
+import com.example.semm.models.User;
 import com.example.semm.security.dto.CurrentAccountDTO;
 import com.example.semm.security.dto.Message;
 import com.example.semm.security.dto.DataAccountUserDTO;
-import com.example.semm.security.model.User;
 import com.example.semm.service.impl.ParkingServiceImp;
 import com.example.semm.service.impl.UserServiceImp;
 import com.example.semm.services.CityService;

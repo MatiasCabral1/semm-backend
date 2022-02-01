@@ -3,18 +3,16 @@ package com.example.semm.service.impl;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 import com.example.semm.models.City;
 import com.example.semm.models.CurrentAccount;
 import com.example.semm.models.Parking;
+import com.example.semm.models.User;
+import com.example.semm.repositories.UserRepository;
 import com.example.semm.models.History;
-import com.example.semm.security.repositories.UserRepository;
 import com.example.semm.security.dto.CurrentAccountDTO;
-import com.example.semm.security.dto.LoginUserDTO;
 import com.example.semm.security.dto.TimePriceDTO;
-import com.example.semm.security.model.User;
 import com.example.semm.services.CityService;
 import com.example.semm.services.CurrentAccountService;
 import com.example.semm.services.UserService;
@@ -25,7 +23,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImp implements UserService{
     @Autowired
-    UserRepository personaRepository;
+    UserRepository userRepository;
     
     @Autowired
     CurrentAccountService ccServiceImp;
@@ -41,26 +39,19 @@ public class UserServiceImp implements UserService{
     
     @Override
     public ArrayList<User> getAll(){
-        return (ArrayList<User>)personaRepository.findAll();
-    }
-    
-    
-    @Override
-    public User saveUser(User p){
-        //return personaRepository.save(p);
-    	return null;
+        return (ArrayList<User>)userRepository.findAll();
     }
 
     @Override
     public Optional<User> getById(Long id){
-        return personaRepository.findById(id);
+        return userRepository.findById(id);
     }
     
 
     @Override
     public boolean delete(Long id){
         try {
-            personaRepository.deleteById(id);
+            userRepository.deleteById(id);
             return true;
         } catch (Exception e) {
             return false;
@@ -69,7 +60,27 @@ public class UserServiceImp implements UserService{
 
 	@Override
 	public User update(User persona) {
-		return personaRepository.save(persona);	
+		return userRepository.save(persona);	
+	}
+	
+	public Optional<User>getByNombreUsuario(String nombreUsuario){
+		return userRepository.findByUsername(nombreUsuario);
+	}
+	
+	public boolean existsByUsername(String nombreUsuario) {
+		return userRepository.existsByUsername(nombreUsuario);
+	}
+	
+	public boolean existsByEmail(String email) {
+		return userRepository.existsByEmail(email);
+	}
+	
+	public Optional<User> findById(Long id){
+		return userRepository.findById(id);
+	}
+	
+	public void save(User usuario) {
+		userRepository.save(usuario);
 	}
 	
 	public void debitBalance(String username) {
@@ -102,8 +113,14 @@ public class UserServiceImp implements UserService{
 	}
 
 	public Optional<User> existByUsername(String username){
-			return personaRepository.findByUsername(username);
+			return userRepository.findByUsername(username);
     }
+
+	@Override
+	public User saveUser(User user) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 
 	

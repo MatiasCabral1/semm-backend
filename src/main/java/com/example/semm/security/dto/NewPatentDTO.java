@@ -1,13 +1,10 @@
-package com.example.semm.models;
+package com.example.semm.security.dto;
 
 import java.io.Serializable;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-
-import com.example.semm.security.dto.NewUserDTO;
-import com.example.semm.security.model.User;
 
 public class NewPatentDTO implements Serializable{
 	/**

@@ -3,12 +3,9 @@ package com.example.semm.security.dto;
 import java.io.Serializable;
 
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
 
 public class CurrentAccountDTO implements Serializable{
 

@@ -15,7 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.example.semm.security.service.UserDetailsServiceImpl;
+import com.example.semm.services.UserDetailsServiceImpl;
 
 public class JwtTokenFilter extends OncePerRequestFilter {
 

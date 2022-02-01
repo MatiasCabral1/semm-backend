@@ -1,4 +1,4 @@
-package com.example.semm.security.service;
+package com.example.semm.services;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -7,9 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.semm.models.Rol;
+import com.example.semm.repositories.RolRepository;
 import com.example.semm.security.enums.RolName;
-import com.example.semm.security.model.Rol;
-import com.example.semm.security.repositories.RolRepository;
 
 @Service
 @Transactional

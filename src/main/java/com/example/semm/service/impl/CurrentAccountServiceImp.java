@@ -6,7 +6,6 @@ import java.util.Optional;
 import com.example.semm.models.CurrentAccount;
 import com.example.semm.repositories.CurrentAccountRepository;
 import com.example.semm.services.CurrentAccountService;
-import com.example.semm.services.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

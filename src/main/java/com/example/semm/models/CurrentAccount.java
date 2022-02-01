@@ -1,12 +1,10 @@
 package com.example.semm.models;
-import java.util.Date;
+
 import java.util.Optional;
-import java.util.Set;
 
 import javax.persistence.*;
 
 import com.example.semm.security.dto.TimePriceDTO;
-import com.example.semm.security.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 

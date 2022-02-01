@@ -26,10 +26,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.semm.models.Patent;
-import com.example.semm.models.NewPatentDTO;
+import com.example.semm.models.User;
 import com.example.semm.models.Parking;
 import com.example.semm.security.dto.Message;
-import com.example.semm.security.model.User;
+import com.example.semm.security.dto.NewPatentDTO;
 import com.example.semm.service.impl.ParkingServiceImp;
 import com.example.semm.service.impl.PatentServiceImpl;
 import com.example.semm.service.impl.UserServiceImp;

@@ -1,7 +1,6 @@
 package com.example.semm.controllers;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.semm.models.City;
 import com.example.semm.models.Parking;
+import com.example.semm.models.User;
 import com.example.semm.models.Holiday;
 import com.example.semm.security.dto.Message;
 import com.example.semm.security.dto.TimePriceDTO;
-import com.example.semm.security.model.User;
 import com.example.semm.service.impl.ParkingServiceImp;
 import com.example.semm.service.impl.UserServiceImp;
 import com.example.semm.services.CityService;
@@ -89,7 +88,6 @@ public class ParkingController {
     	//verifica que el la patente del estacionamiento recibido no se haya iniciado anteriormente con otro o el mismo usuario. 
     	//en caso de que ya haya sido iniciada se devuelve "no content"
     	System.out.println("Metodo: /nuevo");
-    	boolean exist = false;
     	Optional<User> user= userService.existByUsername(parking.getUsername());
     	
     	// verifico si la patente ingresada no tiene un estacionamiento iniciado

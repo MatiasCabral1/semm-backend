@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.semm.models.Parking;
-import com.example.semm.models.Patent;
 import com.example.semm.repositories.ParkingRepository;
 import com.example.semm.services.ParkingService;
 @Service

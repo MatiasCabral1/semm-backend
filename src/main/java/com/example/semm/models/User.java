@@ -1,13 +1,10 @@
-package com.example.semm.security.model;
+package com.example.semm.models;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.*;
 
-import com.example.semm.models.CurrentAccount;
-import com.example.semm.models.Parking;
-import com.example.semm.models.Patent;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 

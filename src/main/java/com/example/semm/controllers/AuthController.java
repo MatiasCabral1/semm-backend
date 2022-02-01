@@ -1,4 +1,4 @@
-package com.example.semm.security.controller;
+package com.example.semm.controllers;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -25,19 +25,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.semm.models.CurrentAccount;
-import com.example.semm.models.Patent;
+import com.example.semm.models.Rol;
+import com.example.semm.models.User;
 import com.example.semm.security.dto.JwtDTO;
 import com.example.semm.security.dto.LoginUserDTO;
 import com.example.semm.security.dto.Message;
 import com.example.semm.security.dto.NewUserDTO;
 import com.example.semm.security.enums.RolName;
-import com.example.semm.security.jwt.JwtEntryPoint;
 import com.example.semm.security.jwt.JwtProvider;
-import com.example.semm.security.model.Rol;
-import com.example.semm.security.model.User;
-import com.example.semm.security.service.RolService;
-import com.example.semm.security.service.UserService;
+import com.example.semm.service.impl.UserServiceImp;
 import com.example.semm.services.CurrentAccountService;
+import com.example.semm.services.RolService;
 
 @RestController
 @RequestMapping("/auth")
@@ -50,7 +48,7 @@ public class AuthController {
 	    AuthenticationManager authenticationManager;
 
 	    @Autowired
-	    UserService userService;
+	    UserServiceImp userService;
 	    
 	    @Autowired
 	    CurrentAccountService currentAccountService;

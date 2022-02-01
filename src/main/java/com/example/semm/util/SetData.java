@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component;
 
 import com.example.semm.models.City;
 import com.example.semm.models.Holiday;
+import com.example.semm.models.Rol;
 import com.example.semm.security.enums.RolName;
-import com.example.semm.security.model.Rol;
-import com.example.semm.security.service.RolService;
 import com.example.semm.service.impl.HolidayServiceImp;
 import com.example.semm.services.CityService;
+import com.example.semm.services.RolService;
 
 @Component
 public class SetData implements CommandLineRunner {

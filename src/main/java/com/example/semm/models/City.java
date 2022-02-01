@@ -2,8 +2,6 @@ package com.example.semm.models;
 
 import javax.persistence.*;
 
-import com.example.semm.security.model.User;
-
 @Entity
 @Table (name = "city")
 public class City {

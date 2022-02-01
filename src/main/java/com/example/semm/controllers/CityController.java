@@ -3,7 +3,6 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import com.example.semm.models.City;
-import com.example.semm.models.CurrentAccount;
 import com.example.semm.service.impl.CityServiceImp;
 
 import org.springframework.beans.factory.annotation.Autowired;

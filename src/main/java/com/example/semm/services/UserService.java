@@ -3,7 +3,7 @@ package com.example.semm.services;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import com.example.semm.security.model.User;
+import com.example.semm.models.User;
 
 public interface UserService {
 	ArrayList<User> getAll();
