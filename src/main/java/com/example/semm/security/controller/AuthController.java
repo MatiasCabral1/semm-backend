@@ -1,6 +1,7 @@
 package com.example.semm.security.controller;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.*;
@@ -83,14 +84,18 @@ public class AuthController {
 	        if(newUser.getRoles().contains("admin"))
 	            roles.add(rolService.getByRolName(RolName.ROLE_ADMIN).get());
 	        user.setRoles(roles);
-	        
+	        userService.save(user);
+
+	     // obtengo el id de user
+			Optional<User> userQuery = userService.findById(user.getId());
 	        CurrentAccount ca = new CurrentAccount();
 	        ca.setBalance(0);
 	        ca.setUser(user);
 	        ca.setPhone(user.getUsername());
 	        user.setCurrentAccount(ca);
-	        userService.save(user);
 	        currentAccountService.save(ca);
+	        user.setCurrentAccount(ca);
+	        userService.save(user);
 	        return new ResponseEntity<User>(user, HttpStatus.CREATED);
 	        }
 	    

@@ -35,7 +35,7 @@ public class CurrentAccount {
 	private String phone;
 	
 	@JsonIgnore
-	@OneToOne(fetch = FetchType.EAGER,cascade = {CascadeType.ALL})
+	@OneToOne(fetch = FetchType.EAGER)
 	private User user;
 	
 	public User getUser() {

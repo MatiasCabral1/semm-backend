@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.semm.models.Patent;
@@ -71,7 +72,7 @@ public class PatentController {
     @PostMapping("/save") 
     public ResponseEntity<?> savePatent(@Valid @RequestBody NewPatentDTO newPatent, BindingResult result){
     	//creo una patente
-    	Optional<User> user= userService.existByUsername(newPatent.getUser_name());
+    	Optional<User> user= userService.existByUsername(newPatent.getUser().getUsername());
     	Patent queryResult = patentServiceImp.existsByPatentAndUser(newPatent.getNumber(),user.get().getId());
     	if(queryResult!=null) {
     		 return new ResponseEntity<Message>(new Message("la patente "+newPatent.getNumber()+" ya existe en su listado de patente"), HttpStatus.BAD_REQUEST);
@@ -93,27 +94,19 @@ public class PatentController {
         
     }
     
-    @PostMapping("/delete")
-    public ResponseEntity<?> deletePatent(@RequestBody NewPatentDTO newPatent){
-    	//delete patent of a user
-    	Optional<User> user= userService.existByUsername(newPatent.getUser_name());
-    	
-    	if(this.parkingService.parkingStartedWithPatent(newPatent.getNumber(),newPatent.getUser_name())) 
+	@DeleteMapping("/{id}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public ResponseEntity<?> delete(@PathVariable(value = "id") Long patentId) {
+		Optional<Patent>patent=this.patentServiceImp.getById(patentId);
+		
+		if(this.parkingService.parkingStartedWithPatent(patent.get().getNumber(),patent.get().getUser().getId())) 
     		return new ResponseEntity<Message>(new Message("No se puede eliminar una patente con estacionamiento iniciado"), HttpStatus.BAD_REQUEST);
-    	
-    	Patent queryResult = patentServiceImp.existsByPatentAndUser(newPatent.getNumber(),user.get().getId());
-    	if(queryResult!=null) {
-    		System.out.println("patente encontrada");
-    		user.get().getPatentList().remove(queryResult);
-        	userService.update(user.get());
-        	patentServiceImp.delete(queryResult.getId());
-        	return new ResponseEntity<Message>(new Message("la patente fue eliminada exitosamente"), HttpStatus.OK);
-    	}else {
-    		return new ResponseEntity<Message>(new Message("la patente "+newPatent.getNumber()+" no se encuentra registrada"), HttpStatus.BAD_REQUEST);
-    	}
-    	
-        
-    }
+		this.patentServiceImp.delete(patentId);
+		return new ResponseEntity<Message>(new Message("Se elimino la patente "+patent.get().getNumber()+" correctamente!") , HttpStatus.OK);
+		
+
+	}
+	
     @GetMapping( path = "/{id}")
     public ResponseEntity<Optional<Patent>> getPatentbyId(@PathVariable("id") Long id) {
     	//get patente by id
@@ -121,22 +114,9 @@ public class PatentController {
         return new ResponseEntity<Optional<Patent>>(patent, HttpStatus.OK);
     }
 
-    @DeleteMapping (path = "/{id}")
-    public ResponseEntity<Patent> deleteById(@PathVariable("id") Long id){
-    	//delete by id
-        boolean ok= this.patentServiceImp.delete(id);
-        if (!ok) {
-        	System.out.println("No es posible eliminar, no se encuentra el usuario con id " + id);
-            return new ResponseEntity<Patent>(HttpStatus.NOT_FOUND);
-        } else {
-        	System.out.println("Se elimino el usuario con id " + id);
-        	return new ResponseEntity<Patent>(HttpStatus.NO_CONTENT);
-        }
-    }
-    
-    @PutMapping // update patent
-    public ResponseEntity<?> updatePatent(@Valid @RequestBody NewPatentDTO patentDTO, BindingResult result) {
-    System.out.println("Actualizando la patente " + patentDTO.getId());
+    @PutMapping("/{id}")// update patent
+    public ResponseEntity<?> updatePatent(@Valid @RequestBody NewPatentDTO patentDTO, BindingResult result,@PathVariable(value = "id") Long patentId) {
+    System.out.println("Actualizando la patente " + patentDTO.getId()+patentDTO.getUser().getUsername()+patentDTO.getNumber());
     
     if (result.hasErrors()) {
     	return new ResponseEntity<Message>(new Message(result.getFieldError().getDefaultMessage()),
@@ -149,11 +129,18 @@ public class PatentController {
 	if(startedPatent!=null){
 		return new ResponseEntity<Message>(new Message("No se puede editar esta patente porque tiene un estacionamiento iniciado"), HttpStatus.BAD_REQUEST);
 	}
-    
+			
 	//convert DTO to Entity
 	Patent patentRequest = modelMapper.map(patentDTO, Patent.class);
-	Patent patent = patentServiceImp.update(patentRequest);
-
+	
+	// busco el User y asocio la relacion
+	System.out.println("id del usuario en patente : "+patentRequest.getUser().getUsername());
+	Optional<User> idUser = userService.existByUsername(patentRequest.getUser().getUsername());
+	patentRequest.setUser(idUser.get());
+		
+	System.out.println("contenido de id recibida como parametro: "+patentId);
+	Patent patent = patentServiceImp.update(patentRequest,patentId);
+	
 	if (patent == null) {
 		return ResponseEntity.notFound().build();
 	} else {

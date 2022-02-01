@@ -92,16 +92,9 @@ public class ParkingController {
     	boolean exist = false;
     	Optional<User> user= userService.existByUsername(parking.getUsername());
     	
-    	//pregunta si la patente que se ingreso ya fue iniciada
-    	//verificar si hay un estacionamiento con la patente ingresada y estado iniciado = true.
-    	ArrayList<Parking> parkingList = parkingServiceImp.getAll();
-    	for(Parking p: parkingList) {
-    		if(p.getPatent().equals(parking.getPatent()) && p.getStarted() == true) {
-    			System.out.println("ERROR: la patente ya tiene un estacionamiento iniciado.");
-    			exist = true;
-    		}
-    	}
-    	if(!exist) {
+    	// verifico si la patente ingresada no tiene un estacionamiento iniciado
+    	Parking startedParking = this.parkingServiceImp.findByPatentStarted(parking.getPatent());
+    	if(startedParking == null) {
     	    	Optional<City> cityObt = cityService.getById(Long.parseLong("1"));
     	    	Optional<User> userObt = userService.existByUsername(parking.getUsername());
     	    	Iterable<Holiday> holidaysObt = holidayService.getAll();
@@ -109,6 +102,7 @@ public class ParkingController {
     	    	double accountBalance = userObt.get().getCurrentAccount().getBalance();
     	       if(accountBalance>= cityObt.get().getValueHours() ) {
     	    	   if(msj==null) {
+    	    		   parking.setUser(userObt.get());
     	    		   this.parkingServiceImp.saveParking(parking);
     	    		   user.get().setParking(parking);
 	    	           this.userService.update(user.get());

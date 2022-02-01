@@ -36,7 +36,7 @@ public class Parking {
 	private String username;
 	
 	@JsonIgnore
-	@OneToOne(optional = true, mappedBy="parking")
+	@OneToOne()
 	private User user;
 	
 	

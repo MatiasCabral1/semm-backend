@@ -31,7 +31,6 @@ public class Patent {
 	
 	@JsonIgnore
 	@ManyToOne
-	@JoinColumn(name = "id_user")
 	User user;
 
 

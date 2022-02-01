@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,6 +53,17 @@ public class PatentServiceImpl implements PatentService{
 	
 	public Set<Patent> getByIdUser(Long idUser){
 		return patenteRepository.getByIdUser(idUser);
+	}
+	
+	@Transactional
+	public Patent update(Patent patentRequest, Long id) {
+		Optional<Patent> patent = this.patenteRepository.findById(id);
+		if (patent.isPresent()) {
+			patent.get().setNumber(patentRequest.getNumber());
+			patent.get().setUser(patentRequest.getUser());
+			return this.patenteRepository.save(patent.get());
+		} else
+			return null;
 	}
 
 }

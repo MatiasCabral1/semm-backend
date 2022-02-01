@@ -55,6 +55,11 @@ public class ParkingServiceImp implements ParkingService {
 		return !estRepository.getParkingStartedWithPatent(patent,username).isEmpty();
 	}
 	
+	public boolean parkingStartedWithPatent(String patent, Long id) {
+		//return -> true -> hay un estacionamiento iniciado con esa patente.
+		return !estRepository.getParkingStartedWithPatent(patent,id).isEmpty();
+	}
+	
 	@Transactional(readOnly = true)
 	public Parking findByPatentStarted(String patente) {
 		return estRepository.findByPatentStarted(patente);
