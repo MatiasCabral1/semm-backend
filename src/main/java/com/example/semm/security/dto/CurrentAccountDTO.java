@@ -7,13 +7,13 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
-public class CurrentAccountDTO implements Serializable{
+public class CurrentAccountDTO implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	@NotNull
 	private Long id;
 	@NotNull
@@ -22,7 +22,7 @@ public class CurrentAccountDTO implements Serializable{
 	@NotNull(message = "Debe ingresar un monto")
 	@Positive(message = "debe ingresar un monto positivo")
 	@DecimalMin("100")
-    private double balance;
+	private double balance;
 
 	public Long getId() {
 		return id;

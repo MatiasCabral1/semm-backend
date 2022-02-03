@@ -17,26 +17,24 @@ import com.example.semm.service.impl.HolidayServiceImp;
 
 @RestController
 @RequestMapping("/holiday")
-@CrossOrigin(origins="http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200")
 public class HolidayController {
-	
+
 	@Autowired
-    HolidayServiceImp holidayServiceImp;
+	HolidayServiceImp holidayServiceImp;
 
 	@GetMapping
-    public ArrayList<Holiday> getAllHoldays(){
-    	//list of holidays
-        return holidayServiceImp.getAll();
+	public ArrayList<Holiday> getAllHoldays() {
+		// list of holidays
+		return holidayServiceImp.getAll();
 	}
 
 	@PostMapping
-	public ResponseEntity<Holiday> saveHoliday(@RequestBody Holiday f){
-		//save a holiday
-		Holiday holiday= this.holidayServiceImp.save(f);
+	public ResponseEntity<Holiday> saveHoliday(@RequestBody Holiday f) {
+		// save a holiday
+		Holiday holiday = this.holidayServiceImp.save(f);
 		return new ResponseEntity<Holiday>(holiday, HttpStatus.CREATED);
-	    
-	}
-	
-	
-}
 
+	}
+
+}

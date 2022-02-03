@@ -1,4 +1,5 @@
 package com.example.semm.controllers;
+
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -22,55 +23,50 @@ import org.springframework.web.bind.annotation.RestController;
 public class CityController {
     @Autowired
     CityServiceImp ciudadServiceImp;
-    
+
     @GetMapping
-    public ArrayList<City> getAllCitys(){
-    	//list of citys
+    public ArrayList<City> getAllCitys() {
+        // list of citys
         return ciudadServiceImp.getAll();
     }
 
     @PostMapping
-    public ResponseEntity<City> saveCity(@RequestBody City city){
-    	//save a city
-    	return new ResponseEntity<City>(this.ciudadServiceImp.saveCity(city), HttpStatus.CREATED);
-        
+    public ResponseEntity<City> saveCity(@RequestBody City city) {
+        // save a city
+        return new ResponseEntity<City>(this.ciudadServiceImp.saveCity(city), HttpStatus.CREATED);
+
     }
 
-    @GetMapping( path = "/{id}")
+    @GetMapping(path = "/{id}")
     public ResponseEntity<Optional<City>> getCityById(@PathVariable("id") Long id) {
-    	//get city by id
+        // get city by id
         return new ResponseEntity<Optional<City>>(this.ciudadServiceImp.getById(id), HttpStatus.OK);
     }
 
-    
     @PutMapping
     public ResponseEntity<City> updateUser(@RequestBody City city) {
-    System.out.println("Actualizando la ciudad " + city.getId());
-    Optional<City> currentCity = ciudadServiceImp.getById(city.getId());
-    
-    if (currentCity.isEmpty()) {
-	    System.out.println("Ciudad with id " + city.getId() + " not found");	    
-	    return new ResponseEntity<City>(HttpStatus.NOT_FOUND);
-    }else {
-    	this.ciudadServiceImp.update(city);
-    	return new ResponseEntity<City>(city, HttpStatus.OK);
-    }
-    	
-    }
-    
-    @DeleteMapping (path = "/{id}")
-    public ResponseEntity<City> eliminarPorId(@PathVariable("id") Long id){
-        boolean ok= this.ciudadServiceImp.delete(id);
-        if (ok) {
-        	System.out.println("No es posible eliminar, no se encuentra la ciudad con id " + id);
+        System.out.println("Actualizando la ciudad " + city.getId());
+        Optional<City> currentCity = ciudadServiceImp.getById(city.getId());
+
+        if (currentCity.isEmpty()) {
+            System.out.println("Ciudad with id " + city.getId() + " not found");
             return new ResponseEntity<City>(HttpStatus.NOT_FOUND);
         } else {
-        	System.out.println("Se elimino la ciudad con id " + id);
-        	return new ResponseEntity<City>(HttpStatus.NO_CONTENT);
+            this.ciudadServiceImp.update(city);
+            return new ResponseEntity<City>(city, HttpStatus.OK);
+        }
+
+    }
+
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<City> eliminarPorId(@PathVariable("id") Long id) {
+        boolean ok = this.ciudadServiceImp.delete(id);
+        if (ok) {
+            System.out.println("No es posible eliminar, no se encuentra la ciudad con id " + id);
+            return new ResponseEntity<City>(HttpStatus.NOT_FOUND);
+        } else {
+            System.out.println("Se elimino la ciudad con id " + id);
+            return new ResponseEntity<City>(HttpStatus.NO_CONTENT);
         }
     }
 }
-
-
-    
-

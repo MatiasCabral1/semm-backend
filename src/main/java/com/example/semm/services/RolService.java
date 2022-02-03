@@ -16,16 +16,16 @@ import com.example.semm.security.enums.RolName;
 public class RolService {
 	@Autowired
 	RolRepository rolRepository;
-	
-	public ArrayList<Rol> getAll(){
-		return (ArrayList<Rol>)rolRepository.findAll();
+
+	public ArrayList<Rol> getAll() {
+		return (ArrayList<Rol>) rolRepository.findAll();
 	}
-	
-	public Optional<Rol> getByRolName(RolName rolNombre){
+
+	public Optional<Rol> getByRolName(RolName rolNombre) {
 		return rolRepository.findByRolNombre(rolNombre);
 	}
-	
-	public void save(Rol rol){
-        rolRepository.save(rol);
-    }
+
+	public void save(Rol rol) {
+		rolRepository.save(rol);
+	}
 }

@@ -7,20 +7,18 @@ import javax.persistence.*;
 import com.example.semm.security.dto.TimePriceDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-
 @Entity
-@Table (name = "currentAccount")
+@Table(name = "currentAccount")
 public class CurrentAccount {
 
 	@Id
-	@Column(unique = true,nullable = false)
+	@Column(unique = true, nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-	@Column 
+
+	@Column
 	private double balance;
-	
-	
+
 	public String getPhone() {
 		return phone;
 	}
@@ -29,13 +27,13 @@ public class CurrentAccount {
 		this.phone = phone;
 	}
 
-	@Column 
+	@Column
 	private String phone;
-	
+
 	@JsonIgnore
 	@OneToOne(fetch = FetchType.EAGER)
 	private User user;
-	
+
 	public User getUser() {
 		return user;
 	}
@@ -62,12 +60,12 @@ public class CurrentAccount {
 
 	public TimePriceDTO debit(Optional<User> user, Optional<Parking> parking, City city) {
 		TimePriceDTO result = parking.get().getCurrentPaymentDetails(city);
-		this.setBalance(this.getBalance() - result.getPrice());	
-        return result;
+		this.setBalance(this.getBalance() - result.getPrice());
+		return result;
 	}
-	
+
 	public void loadBalance(double amount) {
 		this.setBalance(this.getBalance() + amount);
 	}
-	
+
 }

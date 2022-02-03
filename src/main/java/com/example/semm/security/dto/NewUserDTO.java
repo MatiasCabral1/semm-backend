@@ -10,26 +10,36 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-public class NewUserDTO implements Serializable{
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	@NotBlank
+public class NewUserDTO implements Serializable {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    private Long id;
+    @NotBlank
     private String name;
-	@NotNull(message = "Debe ingresar un telefono")
-	@NotBlank(message = "El telefono NO puede ser vacio")
-	@Size(min=10, max=10,message = "El telefono debe tener 10 digitos")
-	@Pattern(regexp = "(\\d{10})",message ="Solo se permiten numeros para el campo 'Telefono'")
-    private String username;//nombre de usuario = telefono
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @NotNull(message = "Debe ingresar un telefono")
+    @NotBlank(message = "El telefono NO puede ser vacio")
+    @Size(min = 10, max = 10, message = "El telefono debe tener 10 digitos")
+    @Pattern(regexp = "(\\d{10})", message = "Solo se permiten numeros para el campo 'Telefono'")
+    private String username;// nombre de usuario = telefono
     @NotNull(message = "Debe ingresar un correo")
-	@NotBlank(message = "el correo NO puede ser vacio")
-	@Email(message = "el correo debe tener el formato texto@texto.texto")
+    @NotBlank(message = "el correo NO puede ser vacio")
+    @Email(message = "el correo debe tener el formato texto@texto.texto")
     private String email;
     @NotNull(message = "Debe ingresar una clave")
     private String password;
-    
+
     private Set<String> roles = new HashSet<>();
 
     public String getName() {

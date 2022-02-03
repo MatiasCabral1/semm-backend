@@ -11,25 +11,25 @@ import javax.persistence.OneToOne;
 @Entity
 public class History {
 	@Id
-	@Column(unique = true,nullable = false)
+	@Column(unique = true, nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column
 	private String dateTransaction;
-	
-	@Column 
+
+	@Column
 	private String typeTransaction;
-	
-	@Column 
+
+	@Column
 	private double balance;
-	
-	@Column 
+
+	@Column
 	private double amount;
-	
+
 	@OneToOne(fetch = FetchType.EAGER)
 	private CurrentAccount currentAccount;
-	
+
 	public History(String dateTransaction, String typeTransaction, double balance, double amount,
 			CurrentAccount currentAccount) {
 		this.dateTransaction = dateTransaction;
@@ -46,8 +46,6 @@ public class History {
 	public void setAmount(double amount) {
 		this.amount = amount;
 	}
-
-	
 
 	public History(String dateTransaction, String typeTransaction, double balance) {
 		this.dateTransaction = dateTransaction;
@@ -71,17 +69,15 @@ public class History {
 		this.currentAccount = currentAccount;
 	}
 
-
-	
 	public History(Long id, String dateTransaction, String typeTransaction) {
 		this.id = id;
 		this.dateTransaction = dateTransaction;
 		this.typeTransaction = typeTransaction;
 	}
-	
-	public History () { }
-	
-	
+
+	public History() {
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -93,8 +89,6 @@ public class History {
 	public String getDateTransaction() {
 		return dateTransaction;
 	}
-
-	
 
 	public void setDateTransaction(String dateTransaction) {
 		this.dateTransaction = dateTransaction;

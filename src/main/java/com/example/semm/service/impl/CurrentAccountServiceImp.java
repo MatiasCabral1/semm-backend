@@ -11,34 +11,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CurrentAccountServiceImp implements CurrentAccountService{
+public class CurrentAccountServiceImp implements CurrentAccountService {
     @Autowired
     CurrentAccountRepository cuentaCorrienteRepository;
-    
+
     @Override
-    public ArrayList<CurrentAccount> getAll(){
-        return (ArrayList<CurrentAccount>)cuentaCorrienteRepository.findAll();
+    public ArrayList<CurrentAccount> getAll() {
+        return (ArrayList<CurrentAccount>) cuentaCorrienteRepository.findAll();
     }
-    
+
     @Override
-    public CurrentAccount save(CurrentAccount cc){
+    public CurrentAccount save(CurrentAccount cc) {
         return cuentaCorrienteRepository.save(cc);
     }
 
     @Override
-    public Optional<CurrentAccount> getById(Long id){
+    public Optional<CurrentAccount> getById(Long id) {
         return cuentaCorrienteRepository.findById(id);
     }
 
+    @Override
+    public CurrentAccount update(CurrentAccount cc) {
+        return cuentaCorrienteRepository.save(cc);
 
-	@Override
-	public CurrentAccount update(CurrentAccount cc) {
-		return cuentaCorrienteRepository.save(cc);
-		
-	}
-	
-	@Override
-    public boolean delete(Long id){
+    }
+
+    @Override
+    public boolean delete(Long id) {
         try {
             cuentaCorrienteRepository.deleteById(id);
             return true;
@@ -46,6 +45,5 @@ public class CurrentAccountServiceImp implements CurrentAccountService{
             return false;
         }
     }
-	
 
 }

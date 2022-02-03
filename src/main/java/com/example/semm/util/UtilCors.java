@@ -22,7 +22,7 @@ public class UtilCors implements Filter {
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -34,15 +34,16 @@ public class UtilCors implements Filter {
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setHeader("Access-Control-Allow-Methods", "DELETE, GET, OPTIONS, PATCH, POST, PUT");
 		response.setHeader("Access-Control-Max-Age", "3600");
-		response.setHeader("Access-Control-Allow-Headers", "x-requested-with, authorization, Content-Type, Authorization, credential, X-XSRF-TOKEN");
+		response.setHeader("Access-Control-Allow-Headers",
+				"x-requested-with, authorization, Content-Type, Authorization, credential, X-XSRF-TOKEN");
 
-			chain.doFilter(req, res);
+		chain.doFilter(req, res);
 
 	}
-	
+
 	@Override
 	public void destroy() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

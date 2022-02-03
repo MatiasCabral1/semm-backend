@@ -6,22 +6,22 @@ import javax.validation.constraints.NotBlank;
 
 import com.example.semm.models.CurrentAccount;
 
-public class DataAccountUserDTO implements Serializable{
+public class DataAccountUserDTO implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	@NotBlank
-    private String name;
+	private String name;
 	@NotBlank(message = "El telefono NO puede ser vacio")
-    private String username;//nombre de usuario = telefono
-	
+	private String username;// nombre de usuario = telefono
+
 	@NotBlank(message = "el correo NO puede ser vacio")
-    private String email;
-    
-    private CurrentAccount currentAccount;
+	private String email;
+
+	private CurrentAccount currentAccount;
 
 	public String getName() {
 		return name;
@@ -63,9 +63,5 @@ public class DataAccountUserDTO implements Serializable{
 		this.email = email;
 		this.currentAccount = currentAccount;
 	}
-    
-
-
-	
 
 }

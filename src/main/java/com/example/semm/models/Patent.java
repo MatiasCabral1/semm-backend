@@ -1,6 +1,5 @@
 package com.example.semm.models;
 
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,23 +10,21 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-
 @Entity
 @Table(name = "patent")
 public class Patent {
 
 	@Id
-	@Column(unique = true,nullable = false)
+	@Column(unique = true, nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column
 	private String number;
-	
+
 	@JsonIgnore
 	@ManyToOne
 	User user;
-
 
 	public Patent(Long id, String number, User user) {
 		super();
@@ -35,7 +32,7 @@ public class Patent {
 		this.number = number;
 		this.user = user;
 	}
-	
+
 	public User getUser() {
 		return user;
 	}
@@ -74,6 +71,5 @@ public class Patent {
 	public void setNumber(String number) {
 		this.number = number;
 	}
-	
-	
+
 }

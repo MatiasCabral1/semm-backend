@@ -20,24 +20,26 @@ import com.example.semm.services.UserDetailsServiceImpl;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class mainSecurity extends WebSecurityConfigurerAdapter{
-	@Autowired
-	UserDetailsServiceImpl userDetailsService;
-	@Autowired
-	JwtEntryPoint jwtEntryPoint;
-	
-	@Bean
-	public JwtTokenFilter jwtTokenFilter() {
-		return new JwtTokenFilter();
-	}
-	@Bean
-    public PasswordEncoder passwordEncoder(){
+public class mainSecurity extends WebSecurityConfigurerAdapter {
+    @Autowired
+    UserDetailsServiceImpl userDetailsService;
+    @Autowired
+    JwtEntryPoint jwtEntryPoint;
+
+    @Bean
+    public JwtTokenFilter jwtTokenFilter() {
+        return new JwtTokenFilter();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-	@Override
+
+    @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-    } 
+    }
 
     @Bean
     @Override

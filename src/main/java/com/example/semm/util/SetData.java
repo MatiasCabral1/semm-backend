@@ -17,36 +17,35 @@ import com.example.semm.services.RolService;
 @Component
 public class SetData implements CommandLineRunner {
 
-    @Autowired
-    RolService rolService;
-    @Autowired
-    CityService ciudadService;
-    @Autowired
-    HolidayServiceImp FeriadoServiceImp;
+	@Autowired
+	RolService rolService;
+	@Autowired
+	CityService ciudadService;
+	@Autowired
+	HolidayServiceImp FeriadoServiceImp;
 
-    @Override
-    public void run(String... args) throws Exception {
-    	String listaFeriados = "01/01,28/02,01/03,24/03,02/04,15/04,01/05,25/05,20/06,09/07,08/12,25/12,17/06,15/08,10/10,20/11,07/10,21/11,09/12";   
+	@Override
+	public void run(String... args) throws Exception {
+		String listaFeriados = "01/01,28/02,01/03,24/03,02/04,15/04,01/05,25/05,20/06,09/07,08/12,25/12,17/06,15/08,10/10,20/11,07/10,21/11,09/12";
 
-    	if(rolService.getAll().isEmpty()){
-    		 Rol rolAdmin = new Rol(RolName.ROLE_ADMIN);
-    	       Rol rolUser = new Rol(RolName.ROLE_USER);
-    	       rolService.save(rolAdmin);
-    	       rolService.save(rolUser);
-    	}
-    
-    	
-    	List<City> listaCiudades = ciudadService.getAll();
-    	if(listaCiudades.isEmpty()) {
-    		City nuevaCiudad = new City("8-20",10);
-        	ciudadService.saveCity(nuevaCiudad);
-    	}
-    	
-    	if(FeriadoServiceImp.getAll().isEmpty()) {
-    		String[] list = listaFeriados.split((","));
-    		for(String elem: list) {
-    			FeriadoServiceImp.save(new Holiday(elem));
-    		}
-    	}
-    }
+		if (rolService.getAll().isEmpty()) {
+			Rol rolAdmin = new Rol(RolName.ROLE_ADMIN);
+			Rol rolUser = new Rol(RolName.ROLE_USER);
+			rolService.save(rolAdmin);
+			rolService.save(rolUser);
+		}
+
+		List<City> listaCiudades = ciudadService.getAll();
+		if (listaCiudades.isEmpty()) {
+			City nuevaCiudad = new City("8-20", 10);
+			ciudadService.saveCity(nuevaCiudad);
+		}
+
+		if (FeriadoServiceImp.getAll().isEmpty()) {
+			String[] list = listaFeriados.split((","));
+			for (String elem : list) {
+				FeriadoServiceImp.save(new Holiday(elem));
+			}
+		}
+	}
 }

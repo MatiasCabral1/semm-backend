@@ -9,25 +9,25 @@ import com.example.semm.services.CityService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 @Service
-public class CityServiceImp implements CityService{
+public class CityServiceImp implements CityService {
     @Autowired
     CityRepository ciudadRepository;
 
-    public ArrayList<City> getAll(){
-        return (ArrayList<City>)ciudadRepository.findAll();
+    public ArrayList<City> getAll() {
+        return (ArrayList<City>) ciudadRepository.findAll();
     }
 
-    public City saveCity(City c){
+    public City saveCity(City c) {
         return ciudadRepository.save(c);
     }
 
-
-    public Optional<City> getById(Long id){
+    public Optional<City> getById(Long id) {
         return ciudadRepository.findById(id);
     }
 
-    public boolean delete(Long id){
+    public boolean delete(Long id) {
         try {
             ciudadRepository.deleteById(id);
             return true;
@@ -36,9 +36,9 @@ public class CityServiceImp implements CityService{
         }
     }
 
-	@Override
-	public City update(City ciudad) {
-		return ciudadRepository.save(ciudad);
-	}
+    @Override
+    public City update(City ciudad) {
+        return ciudadRepository.save(ciudad);
+    }
 
 }

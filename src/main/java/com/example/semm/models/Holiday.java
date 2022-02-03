@@ -12,15 +12,16 @@ import javax.persistence.Table;
 public class Holiday {
 
 	@Id
-	@Column(unique = true,nullable = false)
+	@Column(unique = true, nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column
 	private String date;
 
-	public Holiday() {}
-	
+	public Holiday() {
+	}
+
 	public Holiday(String date) {
 		this.date = date;
 	}

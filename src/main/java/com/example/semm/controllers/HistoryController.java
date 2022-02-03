@@ -19,32 +19,30 @@ import com.example.semm.service.impl.HistoryServiceImpl;
 
 @RestController
 @RequestMapping("/history")
-@CrossOrigin(origins="http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200")
 public class HistoryController {
-	
+
 	@Autowired
-    HistoryServiceImpl historyServiceImp;
-	 
+	HistoryServiceImpl historyServiceImp;
+
 	@GetMapping
-	    public ArrayList<History> getAllHistorys(){
-	    	//list of historys
-	        return historyServiceImp.getAll();
+	public ArrayList<History> getAllHistorys() {
+		// list of historys
+		return historyServiceImp.getAll();
 	}
-	
+
 	@PostMapping
-    public ResponseEntity<History> saveHistory(@RequestBody History h){
-    	//save a history
-    	return new ResponseEntity<History>(this.historyServiceImp.saveHistory(h), HttpStatus.CREATED);
-        
-    }
-	
-	@GetMapping( path = "/{id}")
-    public ResponseEntity<Iterable<History>> getHistoryByCurrentAccountId(@PathVariable("id") Long id) {
-    	//get history list by current account id
-		List<History> history= this.historyServiceImp.getByCurrentAccountId(id);
-        return new ResponseEntity<Iterable<History>>(history, HttpStatus.OK);
-    }
-	
-	
+	public ResponseEntity<History> saveHistory(@RequestBody History h) {
+		// save a history
+		return new ResponseEntity<History>(this.historyServiceImp.saveHistory(h), HttpStatus.CREATED);
+
+	}
+
+	@GetMapping(path = "/{id}")
+	public ResponseEntity<Iterable<History>> getHistoryByCurrentAccountId(@PathVariable("id") Long id) {
+		// get history list by current account id
+		List<History> history = this.historyServiceImp.getByCurrentAccountId(id);
+		return new ResponseEntity<Iterable<History>>(history, HttpStatus.OK);
+	}
 
 }

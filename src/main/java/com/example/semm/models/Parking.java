@@ -1,4 +1,4 @@
-  package com.example.semm.models;
+package com.example.semm.models;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,32 +19,27 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "parking")
 public class Parking {
 	@Id
-	@Column(unique = true,nullable = false)
+	@Column(unique = true, nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column
 	private String date;
-	
+
 	@Column
 	private String patent;
-	
+
 	@Column
 	private Boolean started;
-	
-	private String username;
-	
-	@JsonIgnore
-	@OneToOne()
-	private User user;
-	
-	
-	public String getUsername() {
-		return username;
-	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	@JsonIgnore
+	@OneToOne
+	private User user;
+
+	public Parking(String date, String patent, Boolean started) {
+		this.date = date;
+		this.patent = patent;
+		this.started = started;
 	}
 
 	public Parking(Long id, String date, String patent, Boolean started,
@@ -82,7 +77,6 @@ public class Parking {
 	public Parking() {
 	}
 
-
 	public Long getId() {
 		return id;
 	}
@@ -98,7 +92,6 @@ public class Parking {
 	public void setDate(String date) {
 		this.date = date;
 	}
-
 
 	public String getPatent() {
 		return patent;
@@ -120,65 +113,65 @@ public class Parking {
 		@SuppressWarnings("deprecation")
 		Date start = new Date(this.getDate());
 		Date current = new Date();
-		Long timeElapsed= current.getTime() -start.getTime();
-		double seconds = timeElapsed / 1000; 
+		Long timeElapsed = current.getTime() - start.getTime();
+		double seconds = timeElapsed / 1000;
 		double hour = Math.floor(seconds / 3600);
-		 double minutes = Math.floor((seconds % 3600)/60);
-        double rest=Math.floor(((seconds % 3600)/60)%15);
-		double fractionOfHour=Math.floor(((seconds % 3600)/60)/15);
-		
-		double finalPrice=city.getValueHours()/4;
-		System.out.println("minutes: "+ minutes);
-		System.out.println("hours: "+ hour);
-		if((rest==0)&&(minutes!=0)) {
-			//15 minutos exactos
-			return new TimePriceDTO(hour,minutes,(fractionOfHour*finalPrice)+(hour*city.getValueHours()));
-		}
-		else {
-			//si pasaron unos minutos entonces se cobra los 15 completos.
-			return new TimePriceDTO(hour,minutes,((fractionOfHour*finalPrice)+(hour*city.getValueHours())+finalPrice));
-		}		
-	}
-	
-	public static Message validations(City city, Iterable<Holiday> holidays){
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM");
-		String dateFormatted = sdf.format(new Date()); 
-		Date fullDate= new Date();
-		@SuppressWarnings("deprecation")
-		int hourStart=fullDate.getHours();
-		String hourStartCity=city.getParkingHours().split("-")[0];
-		String hourEndCity=city.getParkingHours().split("-")[1];
+		double minutes = Math.floor((seconds % 3600) / 60);
+		double rest = Math.floor(((seconds % 3600) / 60) % 15);
+		double fractionOfHour = Math.floor(((seconds % 3600) / 60) / 15);
 
-		if((hourStart>=Integer.valueOf (hourStartCity))&&(hourStart<Integer.valueOf (hourEndCity))){
-		     if(!isNonWorkingDate(dateFormatted,holidays)) {
-		    	 if(!isWeekend(fullDate.toString())) {
-		    	 return null;
-		    	 }
-		    	 else return (new Message("No puede operar los fines de semana"));
-		     }
-		     else {
-		    	 return (new Message("No se puede operar los dias feriados"));
-		     }
+		double finalPrice = city.getValueHours() / 4;
+		System.out.println("minutes: " + minutes);
+		System.out.println("hours: " + hour);
+		if ((rest == 0) && (minutes != 0)) {
+			// 15 minutos exactos
+			return new TimePriceDTO(this.getPatent(), hour, minutes,
+					(fractionOfHour * finalPrice) + (hour * city.getValueHours()));
+		} else {
+			// si pasaron unos minutos entonces se cobra los 15 completos.
+			return new TimePriceDTO(this.getPatent(), hour, minutes,
+					((fractionOfHour * finalPrice) + (hour * city.getValueHours()) + finalPrice));
 		}
-		else {
-			return (new Message("El horario operable es de: "+hourStartCity +"a"+hourEndCity+"hs "));
+	}
+
+	public static Message validations(City city, Iterable<Holiday> holidays) {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM");
+		String dateFormatted = sdf.format(new Date());
+		Date fullDate = new Date();
+		@SuppressWarnings("deprecation")
+		int hourStart = fullDate.getHours();
+		String hourStartCity = city.getParkingHours().split("-")[0];
+		String hourEndCity = city.getParkingHours().split("-")[1];
+
+		if ((hourStart >= Integer.valueOf(hourStartCity)) && (hourStart < Integer.valueOf(hourEndCity))) {
+			if (!isNonWorkingDate(dateFormatted, holidays)) {
+				if (!isWeekend(fullDate.toString())) {
+					return null;
+				} else
+					return (new Message("No puede operar los fines de semana"));
+			} else {
+				return (new Message("No se puede operar los dias feriados"));
+			}
+		} else {
+			return (new Message("El horario operable es de: " + hourStartCity + "a" + hourEndCity + "hs "));
 		}
 
 	}
 
 	private static boolean isWeekend(String fecha) {
-		String dia=fecha.split(" ")[0];
+		String dia = fecha.split(" ")[0];
 		return (dia.equals("Sun") || (dia.equals("Sat")));
 
 	}
-	private static boolean isNonWorkingDate(String fecha,Iterable<Holiday> feriados){
-	    for( Holiday f: feriados) {
-	    	if(f.getDate().equals(fecha)) {
-	    		return true;
-	    	}
-	    }
+
+	private static boolean isNonWorkingDate(String fecha, Iterable<Holiday> feriados) {
+		for (Holiday f : feriados) {
+			if (f.getDate().equals(fecha)) {
+				return true;
+			}
+		}
 		return false;
 
 	}
-	
+
 }

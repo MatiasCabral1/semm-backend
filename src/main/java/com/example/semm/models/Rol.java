@@ -13,26 +13,30 @@ public class Rol {
 	@NotNull
 	@Enumerated(EnumType.STRING)
 	private RolName rolNombre;
+
 	public Rol() {
 		super();
 	}
+
 	public Rol(RolName rolNombre) {
 		super();
 		this.rolNombre = rolNombre;
 	}
+
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
+
 	public RolName getRolNombre() {
 		return rolNombre;
 	}
+
 	public void setRolNombre(@NotNull RolName rolNombre) {
 		this.rolNombre = rolNombre;
 	}
-	
-	
 
 }

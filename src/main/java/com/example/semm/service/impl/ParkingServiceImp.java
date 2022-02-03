@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.semm.models.Parking;
 import com.example.semm.repositories.ParkingRepository;
 import com.example.semm.services.ParkingService;
+
 @Service
 public class ParkingServiceImp implements ParkingService {
 	@Autowired
@@ -17,7 +18,7 @@ public class ParkingServiceImp implements ParkingService {
 
 	@Override
 	public ArrayList<Parking> getAll() {
-		return (ArrayList<Parking>)estRepository.findAll();
+		return (ArrayList<Parking>) estRepository.findAll();
 	}
 
 	@Override
@@ -34,31 +35,26 @@ public class ParkingServiceImp implements ParkingService {
 	public boolean delete(Long id) {
 		try {
 			estRepository.deleteById(id);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	@Override
 	public Optional<Parking> getById(Long id) {
 		return estRepository.findById(id);
 	}
-	
-	public Optional<Parking> getParkingStartedByUser(String username) {
-		return estRepository.findByStartedAndUSer(username);
+
+	public Optional<Parking> findByStartedAndUSer(Long id) {
+		return estRepository.findByStartedAndUSer(id);
 	}
-	
-	public boolean parkingStartedWithPatent(String patent, String username) {
-		//return -> true -> hay un estacionamiento iniciado con esa patente.
-		return !estRepository.getParkingStartedWithPatent(patent,username).isEmpty();
-	}
-	
+
 	public boolean parkingStartedWithPatent(String patent, Long id) {
-		//return -> true -> hay un estacionamiento iniciado con esa patente.
-		return !estRepository.getParkingStartedWithPatent(patent,id).isEmpty();
+		// return -> true -> hay un estacionamiento iniciado con esa patente.
+		return !estRepository.getParkingStartedWithPatent(patent, id).isEmpty();
 	}
-	
+
 	@Transactional(readOnly = true)
 	public Parking findByPatentStarted(String patente) {
 		return estRepository.findByPatentStarted(patente);

@@ -6,15 +6,15 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-public class LoginUserDTO implements Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	@NotNull(message = "Debe ingresar un telefono")
-	@NotBlank(message = "El telefono NO puede ser vacio")
-	@Size(min=10, max=10,message = "El telefono debe tener 10 digitos")
-	private String username;
+public class LoginUserDTO implements Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    @NotNull(message = "Debe ingresar un telefono")
+    @NotBlank(message = "El telefono NO puede ser vacio")
+    @Size(min = 10, max = 10, message = "El telefono debe tener 10 digitos")
+    private String username;
     @NotBlank
     @NotNull(message = "Debe ingresar una clave")
     private String password;

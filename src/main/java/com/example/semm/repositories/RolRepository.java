@@ -9,6 +9,6 @@ import com.example.semm.models.Rol;
 import com.example.semm.security.enums.RolName;
 
 @Repository
-public interface RolRepository extends JpaRepository<Rol,Integer>{
+public interface RolRepository extends JpaRepository<Rol, Integer> {
 	Optional<Rol> findByRolNombre(RolName rolNombre);
 }

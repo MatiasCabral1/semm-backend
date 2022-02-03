@@ -9,14 +9,15 @@ import org.springframework.stereotype.Service;
 import com.example.semm.models.History;
 import com.example.semm.repositories.HistoryRepository;
 import com.example.semm.services.HistoryService;
-@Service
 
+@Service
 public class HistoryServiceImpl implements HistoryService {
 	@Autowired
-    HistoryRepository historialRepository;
+	HistoryRepository historialRepository;
+
 	@Override
 	public ArrayList<History> getAll() {
-		return (ArrayList<History>)historialRepository.findAll();
+		return (ArrayList<History>) historialRepository.findAll();
 	}
 
 	@Override

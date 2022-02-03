@@ -17,8 +17,8 @@ public class PrincipalUser implements UserDetails {
 	private String username;
 	private String email;
 	private String password;
-	private Collection <? extends GrantedAuthority> authorities;
-	
+	private Collection<? extends GrantedAuthority> authorities;
+
 	public PrincipalUser(String nombre, String nombreUsuario, String email, String password,
 			Collection<? extends GrantedAuthority> authorities) {
 		super();
@@ -28,48 +28,55 @@ public class PrincipalUser implements UserDetails {
 		this.password = password;
 		this.authorities = authorities;
 	}
-	
+
 	public static PrincipalUser build(User usuario) {
-		List<GrantedAuthority> authorities = 
-				usuario.getRoles().stream().map(rol -> new SimpleGrantedAuthority(rol.getRolNombre().name())).collect(Collectors.toList());
-	return new PrincipalUser(usuario.getName(), usuario.getUsername(),usuario.getEmail(),usuario.getPassword(),authorities);
+		List<GrantedAuthority> authorities = usuario.getRoles().stream()
+				.map(rol -> new SimpleGrantedAuthority(rol.getRolNombre().name())).collect(Collectors.toList());
+		return new PrincipalUser(usuario.getName(), usuario.getUsername(), usuario.getEmail(), usuario.getPassword(),
+				authorities);
 	}
-	
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return authorities;
 	}
-	
+
 	@Override
 	public String getPassword() {
 		return password;
 	}
+
 	@Override
 	public String getUsername() {
 		return username;
 	}
+
 	@Override
 	public boolean isAccountNonExpired() {
 		return true;
 	}
+
 	@Override
 	public boolean isAccountNonLocked() {
 		return true;
 	}
+
 	@Override
 	public boolean isCredentialsNonExpired() {
 		return true;
 	}
+
 	@Override
 	public boolean isEnabled() {
 		return true;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
+
 	public String getEmail() {
 		return email;
 	}
-	
+
 }

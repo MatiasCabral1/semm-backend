@@ -7,9 +7,13 @@ import com.example.semm.models.User;
 
 public interface UserService {
 	ArrayList<User> getAll();
+
 	User saveUser(User user);
-	User  update(User user);
+
+	User update(User user);
+
 	boolean delete(Long id);
+
 	Optional<User> getById(Long id);
 
 }

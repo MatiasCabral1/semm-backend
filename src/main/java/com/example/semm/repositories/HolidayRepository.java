@@ -6,6 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.example.semm.models.Holiday;
 
-public interface HolidayRepository extends CrudRepository<Holiday, Long>{
+public interface HolidayRepository extends CrudRepository<Holiday, Long> {
 	Optional<Holiday> getByDate(String date);
 }
