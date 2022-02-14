@@ -22,7 +22,7 @@ public class SetData implements CommandLineRunner {
 	@Autowired
 	CityService ciudadService;
 	@Autowired
-	HolidayServiceImp FeriadoServiceImp;
+	HolidayServiceImp HolidayServiceImp;
 
 	@Override
 	public void run(String... args) throws Exception {
@@ -41,10 +41,10 @@ public class SetData implements CommandLineRunner {
 			ciudadService.saveCity(nuevaCiudad);
 		}
 
-		if (FeriadoServiceImp.getAll().isEmpty()) {
+		if (HolidayServiceImp.getAll().isEmpty()) {
 			String[] list = listaFeriados.split((","));
 			for (String elem : list) {
-				FeriadoServiceImp.save(new Holiday(elem));
+				HolidayServiceImp.save(new Holiday(elem));
 			}
 		}
 	}

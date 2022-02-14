@@ -14,7 +14,7 @@ public class NewParkingDTO implements Serializable {
 	private String date;
 	private String patent;
 	private Boolean started;
-	@NotNull(message = "no puede ser null")
+	@NotNull(message = "{parking.user.notNull}")
 	private NewUserDTO user;
 
 	public Long getId() {

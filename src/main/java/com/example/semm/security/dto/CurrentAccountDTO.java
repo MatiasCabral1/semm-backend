@@ -19,8 +19,8 @@ public class CurrentAccountDTO implements Serializable {
 	@NotNull
 	@NotBlank
 	private String phone;
-	@NotNull(message = "Debe ingresar un monto")
-	@Positive(message = "debe ingresar un monto positivo")
+	@NotNull(message="{currentAccount.balance.notNull}")
+	@Positive(message = "{currentAccount.ammount.positive}")
 	@DecimalMin("100")
 	private double balance;
 

@@ -12,7 +12,7 @@ public class NewPatentDTO implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Long id;
-	@NotNull(message = "no puede ser null")
+	@NotNull(message = "{parking.user.notNull}")
 	private NewUserDTO user;
 	@NotBlank
 	@Pattern(regexp = "([a-zA-Z]{3}\\d{3})|([a-zA-Z]{2}\\d{3}[a-zA-Z]{2})", message = "la patente debe tener el formato AAA999 o AA000AA")

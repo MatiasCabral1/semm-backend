@@ -11,12 +11,12 @@ public class LoginUserDTO implements Serializable {
      * 
      */
     private static final long serialVersionUID = 1L;
-    @NotNull(message = "Debe ingresar un telefono")
-    @NotBlank(message = "El telefono NO puede ser vacio")
-    @Size(min = 10, max = 10, message = "El telefono debe tener 10 digitos")
+    @NotNull(message = "{user.phone.notNull}")
+    @NotBlank(message = "{user.phone.notBlank}")
+    @Size(min = 10, max = 10, message = "{user.phone.notSize}")
     private String username;
     @NotBlank
-    @NotNull(message = "Debe ingresar una clave")
+    @NotNull(message = "{user.password.notNull}")
     private String password;
 
     public String getUsername() {

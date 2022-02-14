@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -43,6 +45,9 @@ public class ParkingController {
 
 	@Autowired
 	HolidayService holidayService;
+	
+	@Autowired
+	MessageSource msg;
 
 	@GetMapping
 	public ArrayList<Parking> getAllCity() {
@@ -59,7 +64,7 @@ public class ParkingController {
 			System.out.println("no hay un estacionamiento iniciado para el usuario con id: " + id);
 			return false;
 		} else {
-			System.out.println("se ejecuto el getEstado: " + parkingServiceImp.findByStartedAndUSer(id));
+			parkingServiceImp.findByStartedAndUSer(id);
 			return true;
 		}
 
@@ -97,7 +102,7 @@ public class ParkingController {
 			Optional<City> cityObt = cityService.getById(Long.parseLong("1"));
 			Optional<User> userObt = userService.getById(newParking.getUser().getId());
 			Iterable<Holiday> holidaysObt = holidayService.getAll();
-			Message msj = Parking.validations(cityObt.get(), holidaysObt);
+			Message msj = parkingServiceImp.validation(cityObt.get(), holidaysObt);
 			double accountBalance = userObt.get().getCurrentAccount().getBalance();
 			if (accountBalance >= cityObt.get().getValueHours()) {
 				if (msj == null) {
@@ -107,15 +112,15 @@ public class ParkingController {
 					this.parkingServiceImp.saveParking(parking);
 					user.get().setParking(parking);
 					this.userService.update(user.get());
-					return new ResponseEntity<Message>(new Message("Estacionamiento iniciado exitosamente"),
+					return new ResponseEntity<Message>(new Message(msg.getMessage("parking.create", null, LocaleContextHolder.getLocale())),
 							HttpStatus.CREATED);
 				} else
 					return new ResponseEntity<Message>(msj, HttpStatus.BAD_REQUEST);
 			} else
-				return new ResponseEntity<Message>(new Message("El saldo de la cuenta es insuficiente"),
+				return new ResponseEntity<Message>(new Message(msg.getMessage("currentAccount.balance.insufficient", null, LocaleContextHolder.getLocale())),
 						HttpStatus.BAD_REQUEST);
 		} else
-			return new ResponseEntity<Message>(new Message("La patente ya tiene un estacionamiento iniciado"),
+			return new ResponseEntity<Message> (new Message(msg.getMessage("patent.exists", new String[] {newParking.getPatent()}, LocaleContextHolder.getLocale())),
 					HttpStatus.BAD_REQUEST);
 	}
 
@@ -137,7 +142,7 @@ public class ParkingController {
 		} else {
 			Optional<City> cityObt = cityService.getById(Long.parseLong("1"));
 			Iterable<Holiday> holidays = holidayService.getAll();
-			Message msj = Parking.validations(cityObt.get(), holidays);
+			Message msj = parkingServiceImp.validation(cityObt.get(), holidays);
 			if (msj == null) {
 				queryResult.get().setStarted(false);
 				this.userService.debitBalance(id);

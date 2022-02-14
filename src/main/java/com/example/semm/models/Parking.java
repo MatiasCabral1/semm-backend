@@ -1,6 +1,5 @@
 package com.example.semm.models;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -11,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.example.semm.security.dto.Message;
 import com.example.semm.security.dto.TimePriceDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -134,37 +132,13 @@ public class Parking {
 		}
 	}
 
-	public static Message validations(City city, Iterable<Holiday> holidays) {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM");
-		String dateFormatted = sdf.format(new Date());
-		Date fullDate = new Date();
-		@SuppressWarnings("deprecation")
-		int hourStart = fullDate.getHours();
-		String hourStartCity = city.getParkingHours().split("-")[0];
-		String hourEndCity = city.getParkingHours().split("-")[1];
-
-		if ((hourStart >= Integer.valueOf(hourStartCity)) && (hourStart < Integer.valueOf(hourEndCity))) {
-			if (!isNonWorkingDate(dateFormatted, holidays)) {
-				if (!isWeekend(fullDate.toString())) {
-					return null;
-				} else
-					return (new Message("No puede operar los fines de semana"));
-			} else {
-				return (new Message("No se puede operar los dias feriados"));
-			}
-		} else {
-			return (new Message("El horario operable es de: " + hourStartCity + "a" + hourEndCity + "hs "));
-		}
-
-	}
-
-	private static boolean isWeekend(String fecha) {
+	public static boolean isWeekend(String fecha) {
 		String dia = fecha.split(" ")[0];
 		return (dia.equals("Sun") || (dia.equals("Sat")));
 
 	}
 
-	private static boolean isNonWorkingDate(String fecha, Iterable<Holiday> feriados) {
+	public static boolean isNonWorkingDate(String fecha, Iterable<Holiday> feriados) {
 		for (Holiday f : feriados) {
 			if (f.getDate().equals(fecha)) {
 				return true;

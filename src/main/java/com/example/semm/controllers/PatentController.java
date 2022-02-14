@@ -11,6 +11,8 @@ import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -48,6 +50,8 @@ public class PatentController {
 	ParkingServiceImp parkingService;
 	@Autowired
 	private ModelMapper modelMapper;
+	@Autowired
+	private MessageSource msg;
 
 	@GetMapping
 	public ArrayList<Patent> getAllPatents() {
@@ -62,7 +66,7 @@ public class PatentController {
 		Patent queryResult = patentServiceImp.existsByPatentAndUser(newPatent.getNumber(), user.get().getId());
 		if (queryResult != null) {
 			return new ResponseEntity<Message>(
-					new Message("la patente " + newPatent.getNumber() + " ya existe en su listado de patente"),
+					new Message(msg.getMessage("patent.exists", new String[] {newPatent.getNumber()}, LocaleContextHolder.getLocale())),
 					HttpStatus.BAD_REQUEST);
 		}
 
@@ -89,11 +93,10 @@ public class PatentController {
 
 		if (this.parkingService.parkingStartedWithPatent(patent.get().getNumber(), patent.get().getUser().getId()))
 			return new ResponseEntity<Message>(
-					new Message("No se puede eliminar una patente con estacionamiento iniciado"),
-					HttpStatus.BAD_REQUEST);
+					new Message(msg.getMessage("patent.startedParking", null, LocaleContextHolder.getLocale())),HttpStatus.BAD_REQUEST);
 		this.patentServiceImp.delete(patentId);
 		return new ResponseEntity<Message>(
-				new Message("Se elimino la patente " + patent.get().getNumber() + " correctamente!"), HttpStatus.OK);
+				new Message(msg.getMessage("patent.deleted", new String[] {patent.get().getNumber()}, LocaleContextHolder.getLocale())), HttpStatus.OK);
 
 	}
 
@@ -107,20 +110,17 @@ public class PatentController {
 	@PutMapping("/{id}") // update patent
 	public ResponseEntity<?> updatePatent(@Valid @RequestBody NewPatentDTO patentDTO, BindingResult result,
 			@PathVariable(value = "id") Long patentId) {
-		System.out.println("Actualizando la patente " + patentDTO.getId() + patentDTO.getUser().getUsername()
-				+ patentDTO.getNumber());
-
+		
 		if (result.hasErrors()) {
 			return new ResponseEntity<Message>(new Message(result.getFieldError().getDefaultMessage()),
 					HttpStatus.BAD_REQUEST);
 		}
-
+		
 		Optional<Patent> patentPrevious = patentServiceImp.getById(patentDTO.getId());
-		System.out.println("id de patente previa: " + patentPrevious.get().getNumber());
 		Parking startedPatent = parkingService.findByPatentStarted(patentPrevious.get().getNumber());
 		if (startedPatent != null) {
 			return new ResponseEntity<Message>(
-					new Message("No se puede editar esta patente porque tiene un estacionamiento iniciado"),
+					new Message(msg.getMessage("patent.update.parking.started", null, LocaleContextHolder.getLocale())),
 					HttpStatus.BAD_REQUEST);
 		}
 
@@ -131,6 +131,14 @@ public class PatentController {
 		System.out.println("id del usuario en patente : " + patentRequest.getUser().getUsername());
 		Optional<User> idUser = userService.existByUsername(patentRequest.getUser().getUsername());
 		patentRequest.setUser(idUser.get());
+		
+		//verifica si la patente ya esta registrada
+		Patent exist = this.patentServiceImp.existsByPatentAndUser(patentDTO.getNumber(),idUser.get().getId());
+		if(exist != null) {
+			return new ResponseEntity<Message>(
+					new Message(msg.getMessage("patent.exists", new String[] {exist.getNumber()}, LocaleContextHolder.getLocale())),
+					HttpStatus.BAD_REQUEST);
+		}
 
 		System.out.println("contenido de id recibida como parametro: " + patentId);
 		Patent patent = patentServiceImp.update(patentRequest, patentId);
@@ -139,7 +147,7 @@ public class PatentController {
 			return ResponseEntity.notFound().build();
 		} else {
 
-			return new ResponseEntity<Message>(new Message("patente actualizada!"), HttpStatus.CREATED);
+			return new ResponseEntity<Message>(new Message(msg.getMessage("patent.updated", null, LocaleContextHolder.getLocale())), HttpStatus.CREATED);
 		}
 
 	}

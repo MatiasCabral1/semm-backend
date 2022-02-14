@@ -19,7 +19,20 @@ public class NewUserDTO implements Serializable {
     private Long id;
     @NotBlank
     private String name;
+    @NotNull(message = "{user.phone.notNull}")
+    @NotBlank(message = "{user.phone.notBlank}")
+    @Size(min = 10, max = 10, message = "{user.phone.notSize}")
+    @Pattern(regexp = "(\\d{10})", message = "{user.phone.notNumber}")
+    private String username;// nombre de usuario = telefono
+    @NotNull(message = "{user.email.notNull}")
+    @NotBlank(message = "user.email.notBlank")
+    @Email(message = "{user.email.notValid}")
+    private String email;
+    @NotNull(message = "{user.password.notNull}")
+    private String password;
 
+    private Set<String> roles = new HashSet<>();
+    
     public Long getId() {
         return id;
     }
@@ -27,20 +40,6 @@ public class NewUserDTO implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-
-    @NotNull(message = "Debe ingresar un telefono")
-    @NotBlank(message = "El telefono NO puede ser vacio")
-    @Size(min = 10, max = 10, message = "El telefono debe tener 10 digitos")
-    @Pattern(regexp = "(\\d{10})", message = "Solo se permiten numeros para el campo 'Telefono'")
-    private String username;// nombre de usuario = telefono
-    @NotNull(message = "Debe ingresar un correo")
-    @NotBlank(message = "el correo NO puede ser vacio")
-    @Email(message = "el correo debe tener el formato texto@texto.texto")
-    private String email;
-    @NotNull(message = "Debe ingresar una clave")
-    private String password;
-
-    private Set<String> roles = new HashSet<>();
 
     public String getName() {
         return name;

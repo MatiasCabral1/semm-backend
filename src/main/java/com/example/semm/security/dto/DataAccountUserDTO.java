@@ -15,10 +15,10 @@ public class DataAccountUserDTO implements Serializable {
 
 	@NotBlank
 	private String name;
-	@NotBlank(message = "El telefono NO puede ser vacio")
+	@NotBlank(message = "{user.phone.notNull}")
 	private String username;// nombre de usuario = telefono
 
-	@NotBlank(message = "el correo NO puede ser vacio")
+	@NotBlank(message = "{user.email.notNull}")
 	private String email;
 
 	private CurrentAccount currentAccount;
@@ -56,8 +56,8 @@ public class DataAccountUserDTO implements Serializable {
 	}
 
 	public DataAccountUserDTO(@NotBlank String name,
-			@NotBlank(message = "El telefono NO puede ser vacio") String username,
-			@NotBlank(message = "el correo NO puede ser vacio") String email, CurrentAccount currentAccount) {
+			@NotBlank(message = "{user.phone.notNull}") String username,
+			@NotBlank(message = "{user.email.notNull}") String email, CurrentAccount currentAccount) {
 		this.name = name;
 		this.username = username;
 		this.email = email;

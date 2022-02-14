@@ -23,6 +23,8 @@ import com.example.semm.services.CurrentAccountService;
 import com.example.semm.service.impl.PatentServiceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -54,6 +56,9 @@ public class UserController {
 
     @Autowired
     CityService cityService;
+    
+    @Autowired
+    MessageSource msg;
 
     @GetMapping
     public ArrayList<User> getAllUsers() {
@@ -66,17 +71,17 @@ public class UserController {
         // get list of all users
         Optional<User> user = userServiceImp.getById(id);
         if (user.isEmpty()) {
-            return new ResponseEntity<Message>(new Message("Usuario no encontrado"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Message>(new Message(msg.getMessage("user.notFound",null,LocaleContextHolder.getLocale())), HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<User>(user.get(), HttpStatus.OK);
     }
 
     @GetMapping(path = "/getData/{id}")
-    public ResponseEntity<DataAccountUserDTO> getDataById(@PathVariable("id") Long id) {
+    public ResponseEntity<?> getDataById(@PathVariable("id") Long id) {
         // get the data of a user by id
         Optional<User> user = this.userServiceImp.getById(id);
         if (user.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Message>(new Message(msg.getMessage("user.notFound", null, LocaleContextHolder.getLocale())),HttpStatus.NOT_FOUND);
         } else {
             DataAccountUserDTO accountData = new DataAccountUserDTO(user.get().getName(), user.get().getUsername(),
                     user.get().getEmail(), user.get().getCurrentAccount());
@@ -94,11 +99,11 @@ public class UserController {
     }
 
     @GetMapping(path = "/getCurrentAccount/{id}")
-    public ResponseEntity<CurrentAccount> getCurrentAccount(@PathVariable("id") Long id) {
+    public ResponseEntity<?> getCurrentAccount(@PathVariable("id") Long id) {
         // get the current account of a user by username(phone)
         Optional<User> user = this.userServiceImp.getById(id);
         if (user.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Message>(new Message(msg.getMessage("user.notFound", null,LocaleContextHolder.getLocale())),HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<CurrentAccount>(user.get().getCurrentAccount(), HttpStatus.OK);
     }
@@ -115,30 +120,28 @@ public class UserController {
         }
 
         this.userServiceImp.chargeBalance(ca);
-        return new ResponseEntity<Message>(new Message("Se ha actualizado el saldo"), HttpStatus.OK);
+        return new ResponseEntity<Message>(new Message(msg.getMessage("currentAccount.balance.update", null, LocaleContextHolder.getLocale())), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<User> deleteById(@PathVariable("id") Long id) {
+    public ResponseEntity<?> deleteById(@PathVariable("id") Long id) {
         // delete a user by id
         boolean ok = this.userServiceImp.delete(id);
         if (!ok) {
-            System.out.println("No es posible eliminar, no se encuentra el usuario con id " + id);
-            return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Message>(new Message(msg.getMessage("user.notFound", null, LocaleContextHolder.getLocale())),HttpStatus.NOT_FOUND);
         } else {
-            System.out.println("Se elimino el usuario con id " + id);
-            return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<Message>(new Message(msg.getMessage("user.deleted", null, LocaleContextHolder.getLocale())),HttpStatus.NO_CONTENT);
         }
     }
 
     @PutMapping
-    public ResponseEntity<User> updateUser(@RequestBody User user) {
+    public ResponseEntity<?> updateUser(@RequestBody User user) {
         System.out.println("Actualizando el usuario " + user.getId());
         Optional<User> currentUser = userServiceImp.getById(user.getId());
 
         if (currentUser.isEmpty()) {
             System.out.println("User with id " + user.getId() + " not found");
-            return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Message>(new Message(msg.getMessage("user.notFound", null, LocaleContextHolder.getLocale())),HttpStatus.NOT_FOUND);
         } else {
             this.userServiceImp.update(user);
             return new ResponseEntity<User>(user, HttpStatus.OK);

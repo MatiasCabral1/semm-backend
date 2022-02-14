@@ -9,6 +9,8 @@ import javax.validation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -58,6 +60,9 @@ public class AuthController {
 
 	@Autowired
 	JwtProvider jwtProvider;
+	
+	@Autowired
+	MessageSource msg;
 
 	private final static Logger logger = LoggerFactory.getLogger(AuthController.class);
 
@@ -71,7 +76,7 @@ public class AuthController {
 					HttpStatus.BAD_REQUEST);
 		}
 		if (userService.existsByUsername(newUser.getUsername())) {
-			return new ResponseEntity<Message>(new Message("El usuario con ese telefono ya existe"),
+			return new ResponseEntity<Message>(new Message(msg.getMessage("user.existPhone", null, LocaleContextHolder.getLocale())),
 					HttpStatus.BAD_REQUEST);
 		}
 
@@ -98,9 +103,9 @@ public class AuthController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<JwtDTO> login(@Valid @RequestBody LoginUserDTO loginUser, BindingResult bindingResult) {
+	public ResponseEntity<?> login(@Valid @RequestBody LoginUserDTO loginUser, BindingResult bindingResult) {
 		if (bindingResult.hasErrors())
-			return new ResponseEntity(new Message("Los datos ingresados son incorrectos"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Message>(new Message(msg.getMessage("user.notValid", null, LocaleContextHolder.getLocale())), HttpStatus.BAD_REQUEST);
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginUser.getUsername(), loginUser.getPassword()));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
