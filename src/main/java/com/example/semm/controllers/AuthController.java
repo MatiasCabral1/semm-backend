@@ -64,54 +64,66 @@ public class AuthController {
 	@Autowired
 	MessageSource msg;
 
-	private final static Logger logger = LoggerFactory.getLogger(AuthController.class);
+	private Logger logger = LoggerFactory.getLogger(AuthController.class);
 
 	@PostMapping("/nuevo")
 	public ResponseEntity<?> nuevo(@Valid @RequestBody NewUserDTO newUser, BindingResult bindingResult) {
+		this.logger.debug("Running nuevo()");
+		try {
+			// validaciones:
+			if (bindingResult.hasErrors()) {
+				return new ResponseEntity<Message>(new Message(bindingResult.getFieldError().getDefaultMessage()),
+						HttpStatus.BAD_REQUEST);
+			}
+			if (userService.existsByUsername(newUser.getUsername())) {
+				return new ResponseEntity<Message>(new Message(msg.getMessage("user.existPhone", null, LocaleContextHolder.getLocale())),
+						HttpStatus.BAD_REQUEST);
+			}
 
-		// validaciones:
-
-		if (bindingResult.hasErrors()) {
-			return new ResponseEntity<Message>(new Message(bindingResult.getFieldError().getDefaultMessage()),
-					HttpStatus.BAD_REQUEST);
+			User user = new User(newUser.getName(), newUser.getUsername(), newUser.getEmail(),
+					passwordEncoder.encode(newUser.getPassword()));
+			Set<Rol> roles = new HashSet<>();
+			roles.add(rolService.getByRolName(RolName.ROLE_USER).get());
+			if (newUser.getRoles().contains("admin"))
+				roles.add(rolService.getByRolName(RolName.ROLE_ADMIN).get());
+			user.setRoles(roles);
+			userService.save(user);
+			
+			CurrentAccount ca = new CurrentAccount();
+			ca.setBalance(0);
+			ca.setUser(user);
+			ca.setPhone(user.getUsername());
+			user.setCurrentAccount(ca);
+			currentAccountService.save(ca);
+			user.setCurrentAccount(ca);
+			userService.save(user);
+			return new ResponseEntity<User>(user, HttpStatus.CREATED);
+		} catch (Exception e) {
+			this.logger.error("Error found{}", e);
+			return new ResponseEntity<Message>(new Message("Error found:" + e),HttpStatus.NOT_FOUND);
 		}
-		if (userService.existsByUsername(newUser.getUsername())) {
-			return new ResponseEntity<Message>(new Message(msg.getMessage("user.existPhone", null, LocaleContextHolder.getLocale())),
-					HttpStatus.BAD_REQUEST);
-		}
+		
 
-		User user = new User(newUser.getName(), newUser.getUsername(), newUser.getEmail(),
-				passwordEncoder.encode(newUser.getPassword()));
-		Set<Rol> roles = new HashSet<>();
-		roles.add(rolService.getByRolName(RolName.ROLE_USER).get());
-		if (newUser.getRoles().contains("admin"))
-			roles.add(rolService.getByRolName(RolName.ROLE_ADMIN).get());
-		user.setRoles(roles);
-		userService.save(user);
-
-		// obtengo el id de user
-		Optional<User> userQuery = userService.findById(user.getId());
-		CurrentAccount ca = new CurrentAccount();
-		ca.setBalance(0);
-		ca.setUser(user);
-		ca.setPhone(user.getUsername());
-		user.setCurrentAccount(ca);
-		currentAccountService.save(ca);
-		user.setCurrentAccount(ca);
-		userService.save(user);
-		return new ResponseEntity<User>(user, HttpStatus.CREATED);
+		
 	}
 
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@Valid @RequestBody LoginUserDTO loginUser, BindingResult bindingResult) {
-		if (bindingResult.hasErrors())
-			return new ResponseEntity<Message>(new Message(msg.getMessage("user.notValid", null, LocaleContextHolder.getLocale())), HttpStatus.BAD_REQUEST);
-		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(loginUser.getUsername(), loginUser.getPassword()));
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-		Optional<User> user = this.userService.getByUsername(loginUser.getUsername());
-		String jwt = jwtProvider.generateToken(authentication, user.get().getId());
-		JwtDTO jwtDto = new JwtDTO(jwt);
-		return new ResponseEntity<JwtDTO>(jwtDto, HttpStatus.OK);
+		this.logger.debug("Running login()");
+		try {
+			if (bindingResult.hasErrors())
+				return new ResponseEntity<Message>(new Message(msg.getMessage("user.notValid", null, LocaleContextHolder.getLocale())), HttpStatus.BAD_REQUEST);
+			Authentication authentication = authenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(loginUser.getUsername(), loginUser.getPassword()));
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+			Optional<User> user = this.userService.getByUsername(loginUser.getUsername());
+			String jwt = jwtProvider.generateToken(authentication, user.get().getId());
+			JwtDTO jwtDto = new JwtDTO(jwt);
+			logger.info("Correct execution");
+			return new ResponseEntity<JwtDTO>(jwtDto, HttpStatus.OK);
+		} catch (Exception e) {
+			this.logger.error("Error found{}", e);
+			return new ResponseEntity<Message>(new Message("Error found:" + e),HttpStatus.NOT_FOUND);
+		}
 	}
 }
