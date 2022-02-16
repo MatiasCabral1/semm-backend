@@ -39,6 +39,14 @@ public class History {
 		this.currentAccount = currentAccount;
 	}
 
+	public double getBalance() {
+		return balance;
+	}
+
+	public void setBalance(double balance) {
+		this.balance = balance;
+	}
+	
 	public double getAmount() {
 		return amount;
 	}
@@ -53,13 +61,6 @@ public class History {
 		this.balance = balance;
 	}
 
-	public double balance() {
-		return balance;
-	}
-
-	public void setBalance(double balance) {
-		this.balance = balance;
-	}
 
 	public CurrentAccount getCurrentAccount() {
 		return currentAccount;

@@ -120,7 +120,7 @@ public class PatentController {
 		Parking startedPatent = parkingService.findByPatentStarted(patentPrevious.get().getNumber());
 		if (startedPatent != null) {
 			return new ResponseEntity<Message>(
-					new Message(msg.getMessage("patent.update.parking.started", null, LocaleContextHolder.getLocale())),
+					new Message(msg.getMessage("patent.update.parking.started", new String[] {patentPrevious.get().getNumber()}, LocaleContextHolder.getLocale())),
 					HttpStatus.BAD_REQUEST);
 		}
 
